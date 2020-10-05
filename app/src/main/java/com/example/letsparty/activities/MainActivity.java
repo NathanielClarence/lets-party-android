@@ -1,4 +1,4 @@
-package com.example.letsparty;
+package com.example.letsparty.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.letsparty.entities.Room;
+import com.example.letsparty.serverconnector.ServerConnector;
+import com.example.letsparty.serverconnector.StubServerConnector;
 import com.example.letsparty.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {

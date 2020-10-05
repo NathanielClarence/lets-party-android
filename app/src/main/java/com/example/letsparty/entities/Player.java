@@ -1,4 +1,4 @@
-package com.example.letsparty;
+package com.example.letsparty.entities;
 
 import java.io.Serializable;
 

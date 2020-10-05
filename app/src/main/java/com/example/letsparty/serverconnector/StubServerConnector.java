@@ -1,4 +1,7 @@
-package com.example.letsparty;
+package com.example.letsparty.serverconnector;
+
+import com.example.letsparty.entities.Player;
+import com.example.letsparty.entities.Room;
 
 /**
  * A server connector that is a stub, used for development.

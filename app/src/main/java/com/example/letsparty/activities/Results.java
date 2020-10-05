@@ -1,14 +1,16 @@
-package com.example.letsparty;
+package com.example.letsparty.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class Game extends AppCompatActivity {
+import com.example.letsparty.R;
+
+public class Results extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        setContentView(R.layout.activity_results);
     }
 }

@@ -1,8 +1,10 @@
-package com.example.letsparty;
+package com.example.letsparty.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.letsparty.R;
 
 public class Lobby extends AppCompatActivity {
 

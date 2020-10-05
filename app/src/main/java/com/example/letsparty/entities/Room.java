@@ -1,7 +1,6 @@
-package com.example.letsparty;
+package com.example.letsparty.entities;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

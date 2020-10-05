@@ -1,4 +1,6 @@
-package com.example.letsparty;
+package com.example.letsparty.serverconnector;
+
+import com.example.letsparty.entities.Room;
 
 /**
  * An interface containing various methods to communicate with the server.

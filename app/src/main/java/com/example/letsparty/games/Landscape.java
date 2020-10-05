@@ -1,10 +1,12 @@
-package com.example.letsparty;
+package com.example.letsparty.games;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.example.letsparty.R;
 
 
 public class Landscape extends AppCompatActivity

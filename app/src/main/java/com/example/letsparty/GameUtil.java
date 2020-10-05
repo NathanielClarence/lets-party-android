@@ -6,6 +6,8 @@ import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.letsparty.games.Landscape;
+
 public class GameUtil
 {
 
