@@ -8,8 +8,9 @@ import com.example.letsparty.entities.Room;
  */
 public interface ServerConnector {
     Room createRoom(String playerId);
-
     Room joinRoom(String roomCode, String playerId);
+    void quitRoom(String roomCode, String playerId);
+    void changeNickname(String roomCode, String playerId, String nickname);
 
     void startMatch(String roomCode);
 
