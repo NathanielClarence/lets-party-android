@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">LetsParty</string>
+    <!-- Strings used in Main Menu -->
+    <string name="menu_host">HOST MATCH</string>
+    <string name="menu_join">JOIN MATCH</string>
+    <!-- Strings used in Lobby -->
+    <string name="lobby_start">START GAME</string>
+    <string name="lobby_nickname_hint">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Nickname...\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
+    <string name="lobby_player_list">PLAYER LIST</string>
+    <string name="title_activity_lobby">Lobby</string>
+    <!-- Strings used in Game -->
+    <string name="title_activity_game">Game</string>
+    <string name="game_stage">Stage:\u0020</string>
+    <!-- Strings used in Login -->
+    <string name="login_title">LOGIN</string>
+
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+</resources>
