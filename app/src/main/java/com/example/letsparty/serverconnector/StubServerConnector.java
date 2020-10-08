@@ -44,9 +44,9 @@ public class StubServerConnector implements ServerConnector {
     }
 
     @Override
-    public List<Class<? extends Game>> startMatch(String roomCode) {
+    public List<String> startMatch(String roomCode) {
 
-         return Stream.of(ClearDanger.class, Landscape.class).collect(Collectors.toList());
+         return Stream.of("1", "2").collect(Collectors.toList());
     }
 
     @Override

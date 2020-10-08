@@ -1,5 +1,6 @@
 package com.example.letsparty.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,13 +16,14 @@ import com.example.letsparty.games.Landscape;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.StubServerConnector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class Lobby extends AppCompatActivity {
 
     private Room room;
-    private List<Class<? extends Game>> games;
+    private List<String> gameIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +45,19 @@ public class Lobby extends AppCompatActivity {
                 //tell server the match has started and obtain list of games from server
                 .supplyAsync(() -> sc.startMatch(room.getRoomCode()))
                 //set the games and start the first one
-                .thenAccept(games -> {
-                    this.games = games;
+                .thenAccept(gameIds -> {
+                    this.gameIds = gameIds;
                     runGame(0);
                 });
-        
+
     }
 
     private void runGame(int i){
         //obtain the game to be played
-        Class<? extends Game> gameClass = this.games.get(i);
+        Class<? extends Game> gameClass = Game.GAME_IDS.get(this.gameIds.get(i));
+        if (gameClass == null){
+            throw new RuntimeException("Game with id " +  gameIds.get(i) + " does not exist");
+        }
 
         //start the game
         Intent intent = new Intent(this, gameClass);
@@ -73,11 +78,11 @@ public class Lobby extends AppCompatActivity {
         }
 
         int i = requestCode + 1;
-        if (i < this.games.size()) {
+        if (i < this.gameIds.size()) {
             //if there are games remaining, go to next game
             runGame(requestCode + 1);
         } else {
-            //go to result screen
+            //if no games remaining, go to result screen
             Intent intent = new Intent(this, Results.class);
             startActivity(intent);
             //finish();
@@ -85,4 +90,15 @@ public class Lobby extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putStringArrayList("gameIds", new ArrayList<>(this.gameIds));
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.gameIds = savedInstanceState.getStringArrayList("gameIds");
+    }
 }

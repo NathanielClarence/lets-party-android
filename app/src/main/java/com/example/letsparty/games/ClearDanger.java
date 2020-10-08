@@ -26,7 +26,6 @@ public class ClearDanger extends Game
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.gameId = "1";
         setContentView(R.layout.activity_clear_danger);
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }

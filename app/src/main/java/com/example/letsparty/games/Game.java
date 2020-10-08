@@ -8,15 +8,26 @@ import android.os.Bundle;
 import com.example.letsparty.R;
 
 import java.time.Instant;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class Game extends AppCompatActivity {
     public static final String TIME_ELAPSED = "timeElapsed";
     public static final String END_TIME = "endTime";
     public static final String GAME_ID = "gameId";
 
+    //mapping of game id to class
+    public static final Map<String, Class<? extends Game>> GAME_IDS =
+            Stream.of(
+                    new SimpleEntry<>("1", ClearDanger.class),
+                    new SimpleEntry<>("2", Landscape.class)
+            ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+
     private long startTime;
     private long endTime;
-    protected String gameId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +42,17 @@ public abstract class Game extends AppCompatActivity {
         Intent returnIntent = new Intent();
         returnIntent.putExtra(TIME_ELAPSED, endTime - startTime);
         returnIntent.putExtra(END_TIME, endTime);
-        returnIntent.putExtra(GAME_ID, this.gameId);
+        returnIntent.putExtra(GAME_ID, this.getGameId());
         setResult(RESULT_OK, returnIntent);
 
         this.finish();
     }
 
     public String getGameId(){
-        return gameId;
+        for (String id: GAME_IDS.keySet()){
+            if (GAME_IDS.get(id) == this.getClass())
+                return id;
+        }
+        return null;
     }
 }

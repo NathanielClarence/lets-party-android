@@ -17,7 +17,6 @@ public class Landscape extends Game
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.gameId = "2";
         setContentView(R.layout.activity_landscape);
     }
 
