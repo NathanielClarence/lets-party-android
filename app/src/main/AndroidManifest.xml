@@ -31,9 +31,9 @@
 
         <activity android:name=".Login" />
         <activity android:name=".activities.Results"></activity>
-        <activity android:name=".activities.Game" />
+        <activity android:name=".games.Game" />
         <activity android:name=".activities.Lobby" />
-        
+
         <activity android:name=".games.Landscape" android:configChanges="orientation|screenSize"></activity>
         <activity android:name=".games.ClearDanger" >
             <intent-filter>

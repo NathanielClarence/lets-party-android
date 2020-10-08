@@ -16,7 +16,7 @@ import com.example.letsparty.R;
 
 >>>>>>> Refactor classes by putting them in different packages:app/src/main/java/com/example/letsparty/games/ClearDanger.java
 
-public class ClearDanger extends AppCompatActivity
+public class ClearDanger extends Game
 {
     private int dangerNum = 3;
     AlertDialog.Builder builder;

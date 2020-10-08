@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.example.letsparty.R;
 
 
-public class Landscape extends AppCompatActivity
+public class Landscape extends Game
 {
 
 
