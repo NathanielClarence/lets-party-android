@@ -2,9 +2,16 @@ package com.example.letsparty.serverconnector;
 
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
+import com.example.letsparty.games.ClearDanger;
+import com.example.letsparty.games.Game;
+import com.example.letsparty.games.Landscape;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A server connector that is a stub, used for development.
@@ -37,8 +44,9 @@ public class StubServerConnector implements ServerConnector {
     }
 
     @Override
-    public void startMatch(String roomCode) {
+    public List<Class<? extends Game>> startMatch(String roomCode) {
 
+         return Stream.of(ClearDanger.class, Landscape.class).collect(Collectors.toList());
     }
 
     @Override

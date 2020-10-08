@@ -17,6 +17,7 @@ public class Landscape extends Game
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        this.gameId = "2";
         setContentView(R.layout.activity_landscape);
     }
 
@@ -32,6 +33,7 @@ public class Landscape extends Game
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             System.out.println(("*******************LANDSCAPE*****************"));
             text.setText("Success!");
+            gameFinished();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             System.out.println(("*******************PORTRAIT*****************"));
         }

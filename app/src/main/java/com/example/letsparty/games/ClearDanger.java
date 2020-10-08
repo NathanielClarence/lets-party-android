@@ -26,6 +26,7 @@ public class ClearDanger extends Game
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        this.gameId = "1";
         setContentView(R.layout.activity_clear_danger);
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
@@ -54,8 +55,9 @@ public class ClearDanger extends Game
         if(dangerNum <= 0)
         {
             System.out.println("SUCCESS!");
-            AlertDialog dialog = GameUtil.createDialog(this, "Success!", "Click next when you're ready");
-            dialog.show();
+            gameFinished();
+            //AlertDialog dialog = GameUtil.createDialog(this, "Success!", "Click next when you're ready");
+            //dialog.show();
 
         }
 
