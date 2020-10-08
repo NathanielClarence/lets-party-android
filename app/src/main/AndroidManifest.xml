@@ -33,6 +33,7 @@
         <activity android:name=".activities.Results"></activity>
         <activity android:name=".games.Game" />
         <activity android:name=".activities.Lobby" />
+        <activity android:name=".activities.GameRunner" />
 
         <activity android:name=".games.Landscape" android:configChanges="orientation|screenSize"></activity>
         <activity android:name=".games.ClearDanger" >
