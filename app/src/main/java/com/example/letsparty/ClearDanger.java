@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class ClearDanger extends AppCompatActivity
 {
@@ -20,6 +21,7 @@ public class ClearDanger extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clear_danger);
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
 
     public void onButtonClicked(View v)

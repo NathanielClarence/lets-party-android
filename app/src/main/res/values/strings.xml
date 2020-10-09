@@ -8,6 +8,7 @@
     <string name="lobby_nickname_hint">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Nickname...\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="lobby_player_list">PLAYER LIST</string>
     <string name="title_activity_lobby">Lobby</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <!-- Strings used in Game -->
     <string name="title_activity_game">Game</string>
     <string name="game_stage">Stage:\u0020</string>

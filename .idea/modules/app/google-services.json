@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "332639180373",
+    "firebase_url": "https://lets-party-6bef2.firebaseio.com",
+    "project_id": "lets-party-6bef2",
+    "storage_bucket": "lets-party-6bef2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332639180373:android:3e50c73d4eca6df8f026dc",
+        "android_client_info": {
+          "package_name": "com.example.letsparty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "332639180373-ok9c42b6b4s7t8uahjp4qo31rtvo429k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.letsparty",
+            "certificate_hash": "622749356e3cddbd5b330b08debd9c1a3b95b456"
+          }
+        },
+        {
+          "client_id": "332639180373-7mukvraiqbdvcb3eli2o5c2noa6nek2p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwURROi9zHzvLFjd3h6LG5MA6e20A1K8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "332639180373-7mukvraiqbdvcb3eli2o5c2noa6nek2p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
