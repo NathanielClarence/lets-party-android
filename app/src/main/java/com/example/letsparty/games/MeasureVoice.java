@@ -56,6 +56,7 @@ public class MeasureVoice extends Game {
 
             soundDecibel = EMA_FILTER * recorder.getMaxAmplitude() + (1.0 - EMA_FILTER) * mEMA;
             soundLevel.setText(Double.toString(soundDecibel)+" dB");
+            //gameFinished();
         }
     }
 }

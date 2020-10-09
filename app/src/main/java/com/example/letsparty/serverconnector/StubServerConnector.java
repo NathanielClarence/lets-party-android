@@ -46,7 +46,7 @@ public class StubServerConnector implements ServerConnector {
     @Override
     public List<String> startMatch(String roomCode) {
 
-         return Stream.of("1", "2").collect(Collectors.toList());
+         return Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
     }
 
     @Override

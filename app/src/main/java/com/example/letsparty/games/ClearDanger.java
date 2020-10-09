@@ -8,13 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-<<<<<<< HEAD:app/src/main/java/com/example/letsparty/ClearDanger.java
+
 import com.google.firebase.messaging.FirebaseMessaging;
-=======
 import com.example.letsparty.GameUtil;
 import com.example.letsparty.R;
-
->>>>>>> Refactor classes by putting them in different packages:app/src/main/java/com/example/letsparty/games/ClearDanger.java
 
 public class ClearDanger extends Game
 {

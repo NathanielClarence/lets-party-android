@@ -22,8 +22,9 @@ public abstract class Game extends AppCompatActivity {
     //mapping of game id to class
     public static final Map<String, Class<? extends Game>> GAME_IDS =
             Stream.of(
-                    new SimpleEntry<>("1", ClearDanger.class),
-                    new SimpleEntry<>("2", Landscape.class)
+                    new SimpleEntry<>("ClearDanger", ClearDanger.class),
+                    new SimpleEntry<>("Landscape", Landscape.class),
+                    new SimpleEntry<>("MeasureVoice", MeasureVoice.class)
             ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
     private long startTime;

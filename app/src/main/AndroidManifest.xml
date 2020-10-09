@@ -10,7 +10,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".games.MeasureVoice"></activity>
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -26,26 +25,21 @@
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity android:name=".Login" />
         <activity android:name=".activities.Results" />
-        <activity android:name=".games.Game" />
         <activity android:name=".activities.Lobby" />
         <activity android:name=".activities.GameRunner" />
+
+        <activity android:name=".games.Game" />
         <activity
             android:name=".games.Landscape"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".games.ClearDanger">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".games.ClearDanger"></activity>
+        <activity android:name=".games.MeasureVoice"></activity>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
