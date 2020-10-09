@@ -1,4 +1,4 @@
-package com.example.letsparty;
+package com.example.letsparty.games;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,8 +6,10 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.letsparty.R;
 
-public class Landscape extends AppCompatActivity
+
+public class Landscape extends Game
 {
 
 
@@ -30,6 +32,7 @@ public class Landscape extends AppCompatActivity
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             System.out.println(("*******************LANDSCAPE*****************"));
             text.setText("Success!");
+            gameFinished();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             System.out.println(("*******************PORTRAIT*****************"));
         }

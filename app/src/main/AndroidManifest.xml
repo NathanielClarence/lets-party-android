@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.letsparty">
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -9,23 +10,37 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".Landscape"
-            android:configChanges="orientation|screenSize" />
 
-        <activity android:name=".ClearDanger">
+        <uses-library
+            android:name="com.google.android.wearable"
+            android:required="false" />
+        <!--
+               Set to true if your app is Standalone, that is, it does not require the handheld
+               app to run.
+        -->
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".Results" />
         <activity android:name=".Login" />
-        <activity android:name=".Lobby" />
-        <activity android:name=".Game" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".activities.Results" />
+        <activity android:name=".activities.Lobby" />
+        <activity android:name=".activities.GameRunner" />
+
+        <activity android:name=".games.Game" />
+        <activity
+            android:name=".games.Landscape"
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".games.ClearDanger"></activity>
+        <activity android:name=".games.MeasureVoice"></activity>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
@@ -37,6 +52,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

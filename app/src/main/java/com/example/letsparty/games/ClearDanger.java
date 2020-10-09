@@ -1,4 +1,4 @@
-package com.example.letsparty;
+package com.example.letsparty.games;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,14 +12,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+<<<<<<< HEAD:app/src/main/java/com/example/letsparty/ClearDanger.java
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.messaging.FirebaseMessaging;
+=======
 
-public class ClearDanger extends AppCompatActivity
+>>>>>>> 7989dc773172898ad4bc2058e68fb54680aa066e:app/src/main/java/com/example/letsparty/games/ClearDanger.java
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.example.letsparty.GameUtil;
+import com.example.letsparty.R;
+
+public class ClearDanger extends Game
 {
     private static final String TAG = "message" ;
     private int dangerNum = 3;
@@ -77,8 +83,9 @@ public class ClearDanger extends AppCompatActivity
         if(dangerNum <= 0)
         {
             System.out.println("SUCCESS!");
-            AlertDialog dialog = GameUtil.createDialog(this, "Success!", "Click next when you're ready");
-            dialog.show();
+            gameFinished();
+            //AlertDialog dialog = GameUtil.createDialog(this, "Success!", "Click next when you're ready");
+            //dialog.show();
 
         }
 
