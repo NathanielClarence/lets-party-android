@@ -102,35 +102,39 @@ public class MainActivity<mFunctions> extends AppCompatActivity implements NameD
         //redirect to new activity
         Intent intent = new Intent(this, JoinGame.class);
         startActivity(intent);
+
+        //show a dialog asking for the room number from the user
+        //RoomNumberDialog dialog = new RoomNumberDialog();
+        //dialog.show(getSupportFragmentManager(), "roomNumber");
     }
 
    /* @Override
     public void onRoomNumberEntered(String roomNumber) {
         //contact server and get a new room id
-        ServerConnector sc = new StubServerConnector();
+        ServerConnector sc = ServerUtil.getServerConnector();
+ -      Player player = new Player("3456", "Dimitri", token);
         Room room;
-        try {
-            room = sc.joinRoom(roomNumber, this.playerId);
-        }catch (RoomNotFoundException e){
-            //if room not found, display an error message
-            String errorText = getString(R.string.error_room_number) + roomNumber;
-            Toast errorToast = Toast.makeText(getApplicationContext(), errorText, Toast.LENGTH_SHORT);
-            errorToast.show();
-            return;
-        }
-
-        //go to the lobby
-        Intent intent = new Intent(this, Lobby.class);
-        intent.putExtra(ROOM, room);
-        intent.putExtra(PLAYER_ID, playerId);
-        startActivity(intent);
+        sc.joinRoom(roomNumber, player)
+            .addOnSuccessListener(room -> {
+                //go to the lobby
+                Intent intent = new Intent(this, Lobby.class);
+                intent.putExtra(ROOM, room);
+                startActivity(intent);
+            })
+            .addOnFailureListener(exception -> {
+                //if room not found, display an error message
+                if (exception instanceof RoomNotFoundException) {
+                    String errorText = getString(R.string.error_room_number) + roomNumber;
+                    Toast errorToast = Toast.makeText(getApplicationContext(), errorText, Toast.LENGTH_SHORT);
+                    errorToast.show();
+                }
+            });
     } */
 
     @Override
     public void onNameDialogPositiveClick(DialogFragment dialog, Player player) {
         //contact server and get a new room id
         ServerConnector sc = ServerUtil.getServerConnector();
-
         try {
             sc.createRoom(player)
                     .addOnSuccessListener(room -> {

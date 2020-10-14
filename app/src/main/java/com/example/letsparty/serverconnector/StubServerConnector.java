@@ -44,14 +44,17 @@ public class StubServerConnector implements ServerConnector {
 
     @Override
     public Task<Room> joinRoom(String roomCode, Player player) {
+        //test the case if room number is not available
         if (!roomCode.equals("701N")){
             throw new RoomNotFoundException(roomCode);
         }
 
+        //create a new room with a fake host
         Player host = new Player("TEST HOST", "Host", "12345");
         Room room = new Room("701N", host);
         rooms.add(room);
-
+        
+        //add the player
         room.addPlayer(player);
         return Tasks.forResult(room);
     }
