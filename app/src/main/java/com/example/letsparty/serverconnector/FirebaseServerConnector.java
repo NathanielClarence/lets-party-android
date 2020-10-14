@@ -84,7 +84,7 @@ public class FirebaseServerConnector implements ServerConnector{
                 });
     }
     @Override
-    public Task<Room> joinRoom(String roomCode, String playerId) {
+    public Task<Room> joinRoom(String roomCode, Player player) {
         return null;
     }
 

@@ -4,8 +4,17 @@ import android.content.Context;
 
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+
+import com.example.letsparty.exceptions.RoomNotFoundException;
+import com.example.letsparty.games.ClearDanger;
+import com.example.letsparty.games.Game;
+import com.example.letsparty.games.Landscape;
+
+import java.util.ArrayList;
+import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,8 +43,17 @@ public class StubServerConnector implements ServerConnector {
     }
 
     @Override
-    public Task<Room> joinRoom(String roomCode, String playerId) {
-        return null;
+    public Task<Room> joinRoom(String roomCode, Player player) {
+        if (!roomCode.equals("701N")){
+            throw new RoomNotFoundException(roomCode);
+        }
+
+        Player host = new Player("TEST HOST", "Host", "12345");
+        Room room = new Room("701N", host);
+        rooms.add(room);
+
+        room.addPlayer(player);
+        return Tasks.forResult(room);
     }
 
     @Override

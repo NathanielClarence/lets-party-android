@@ -12,8 +12,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.letsparty.PlayerUtil;
+import com.example.letsparty.R;
+import com.example.letsparty.entities.Room;
+import com.example.letsparty.exceptions.RoomNotFoundException;
+import com.example.letsparty.serverconnector.ServerConnector;
+import com.example.letsparty.serverconnector.StubServerConnector;
 import com.example.letsparty.databinding.ActivityMainBinding;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
@@ -27,8 +31,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.example.letsparty.entities.Player;
 
-public class MainActivity<mFunctions> extends AppCompatActivity implements NameDialog.NameDialogListener {
+
+public class MainActivity<mFunctions> extends AppCompatActivity implements NameDialog.NameDialogListener{
+
     private FirebaseFunctions mFunctions;
+    private String token;
 
     public static final String ROOM = "room";
 
@@ -42,7 +49,7 @@ public class MainActivity<mFunctions> extends AppCompatActivity implements NameD
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         SharedPreferences prefs = getSharedPreferences("TOKEN_PREF", MODE_PRIVATE);
-        final String token = prefs.getString("token", "");
+        token = prefs.getString("token", "");
 
         Log.e("NEW_INACTIVITY_TOKEN", token);
         if (TextUtils.isEmpty(token)) {
