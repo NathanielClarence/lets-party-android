@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityLobbyBinding;
 import com.example.letsparty.entities.Room;
@@ -27,6 +28,7 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class Lobby extends AppCompatActivity {
 
     private Room room;
+    private String playerId;
     private List<String> gameIds;
     private Bitmap bitmap;
     private ImageView qrImage;
@@ -35,19 +37,24 @@ public class Lobby extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityLobbyBinding binding = ActivityLobbyBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
         Intent intent = getIntent();
         this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
-
         String roomCode = room.getRoomCode();
 
         binding.textView.setText(roomCode);
         generateQRCode(roomCode);
 
+        this.playerId = intent.getStringExtra(MainActivity.PLAYER_ID);
+        boolean isHost = room.getHost().getId().equals(this.playerId);
+        binding.startButton.setVisibility(isHost ? View.VISIBLE : View.INVISIBLE);
+        binding.readyButton.setVisibility(isHost ? View.INVISIBLE : View.VISIBLE);
 
         //binding.editTextTextPersonName.on
-        binding.button.setOnClickListener(view -> startMatch());
+        binding.startButton.setOnClickListener(view -> startMatch());
+        binding.readyButton.setOnClickListener(view -> waitForMatchStart());
+
+        setContentView(binding.getRoot());
     }
 
     private void startMatch() {
@@ -64,9 +71,11 @@ public class Lobby extends AppCompatActivity {
 
     }
 
+    private void waitForMatchStart() {
+    }
+
     private void generateQRCode(String RoomCode){
         qrImage = (ImageView) findViewById(R.id.imageView2);
-
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         Point point = new Point();

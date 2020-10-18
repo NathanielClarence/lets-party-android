@@ -29,6 +29,10 @@ public class Room implements Serializable {
       return roomCode;
     }
 
+    public Player getHost(){
+        return this.host;
+    }
+
     public List<Player> getPlayers(){
         return this.players;
     }
