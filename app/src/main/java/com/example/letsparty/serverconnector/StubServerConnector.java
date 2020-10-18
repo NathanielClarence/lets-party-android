@@ -53,7 +53,7 @@ public class StubServerConnector implements ServerConnector {
         Player host = new Player("TEST HOST", "Host", "12345");
         Room room = new Room("701N", host);
         rooms.add(room);
-        
+
         //add the player
         room.addPlayer(player);
         return Tasks.forResult(room);

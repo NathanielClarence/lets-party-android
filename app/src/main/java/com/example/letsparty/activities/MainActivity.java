@@ -38,11 +38,16 @@ public class MainActivity<mFunctions> extends AppCompatActivity implements NameD
     private String token;
 
     public static final String ROOM = "room";
+    public static final String PLAYER_ID = "playerId";
+
+    private String playerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFunctions = FirebaseFunctions.getInstance();
+        this.playerId = PlayerUtil.getPlayerId();
+
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -85,16 +90,9 @@ public class MainActivity<mFunctions> extends AppCompatActivity implements NameD
     }
 
     private void onHostClicked( String token){
-        //contact server and get a new room id
         Log.d("onHostClicked", "Checking");
-
-        //get server connector
-
         NameDialog dialog = new NameDialog();
         dialog.show(getSupportFragmentManager(), "name");
-
-
-
     }
 
     private void onJoinClicked(){
@@ -112,8 +110,8 @@ public class MainActivity<mFunctions> extends AppCompatActivity implements NameD
     public void onRoomNumberEntered(String roomNumber) {
         //contact server and get a new room id
         ServerConnector sc = ServerUtil.getServerConnector();
- -      Player player = new Player("3456", "Dimitri", token);
-        Room room;
+        Player player = new Player("3456", "Dimitri", token);
+
         sc.joinRoom(roomNumber, player)
             .addOnSuccessListener(room -> {
                 //go to the lobby
