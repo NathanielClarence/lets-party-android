@@ -68,13 +68,21 @@ public class Lobby extends AppCompatActivity {
         this.playerId = intent.getStringExtra(MainActivity.PLAYER_ID);
         boolean isHost = room.getHost().getId().equals(this.playerId);
         binding.startButton.setVisibility(isHost ? View.VISIBLE : View.INVISIBLE);
-        binding.readyButton.setVisibility(isHost ? View.INVISIBLE : View.VISIBLE);
+        //binding.readyButton.setVisibility(isHost ? View.INVISIBLE : View.VISIBLE);
 
         //binding.editTextTextPersonName.on
         binding.startButton.setOnClickListener(view -> startMatch());
-        binding.readyButton.setOnClickListener(view -> readyForMatch());
+        //binding.readyButton.setOnClickListener(view -> readyForMatch());
 
         setContentView(binding.getRoot());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!room.getHost().getId().equals(this.playerId)) {
+            readyForMatch();
+        }
     }
 
     private void startMatch() {
@@ -87,7 +95,7 @@ public class Lobby extends AppCompatActivity {
     }
     private void readyForMatch() {
         binding.startButton.setEnabled(false);
-        binding.readyButton.setEnabled(false);
+        //binding.readyButton.setEnabled(false);
         waitForMatchStart()
             .addOnSuccessListener(gameIds -> {
                 Intent intent = new Intent(this, GameRunner.class);
@@ -98,7 +106,7 @@ public class Lobby extends AppCompatActivity {
             .addOnFailureListener(ex -> {
                 Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT);
                 binding.startButton.setEnabled(true);
-                binding.readyButton.setEnabled(true);
+                //binding.readyButton.setEnabled(true);
             });
     }
 
@@ -121,7 +129,7 @@ public class Lobby extends AppCompatActivity {
 
         //the following code is a stub for testing purposes
         List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        new Handler().postDelayed(() -> tcs.setResult(gameIds), 3000);
+        new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
 
         return tcs.getTask();
     }
