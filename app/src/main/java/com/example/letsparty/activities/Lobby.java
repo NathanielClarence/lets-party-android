@@ -27,14 +27,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import com.google.zxing.WriterException;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -112,6 +108,7 @@ public class Lobby extends AppCompatActivity {
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
                 //check message that all players are ready
