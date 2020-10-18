@@ -12,6 +12,8 @@ import com.example.letsparty.games.Game;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.example.letsparty.serverconnector.StubServerConnector;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,15 +61,28 @@ public class GameRunner extends AppCompatActivity {
         }
 
         int i = requestCode + 1;
-        if (i < this.gameIds.size()) {
-            //if there are games remaining, go to next game
-            runGame(requestCode + 1);
-        } else {
-            //if no games remaining, go to result screen
-            Intent intent = new Intent(this, Results.class);
-            startActivity(intent);
-            finish();
-        }
+        readyForNextGame(i);
+    }
+
+    private void readyForNextGame(int i) {
+        waitForNextGame()
+            .addOnCompleteListener(task -> {
+                if (i < this.gameIds.size()) {
+                    //if there are games remaining, go to next game
+                    runGame(i);
+                } else {
+                    //if no games remaining, go to result screen
+                    Intent intent = new Intent(this, Results.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+    }
+
+    private Task<Boolean> waitForNextGame(){
+        TaskCompletionSource tcs = new TaskCompletionSource();
+        tcs.setResult(true); //placeholder
+        return tcs.getTask();
     }
 
     @Override
