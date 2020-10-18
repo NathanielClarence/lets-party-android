@@ -12,15 +12,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-<<<<<<< HEAD:app/src/main/java/com/example/letsparty/ClearDanger.java
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-=======
 
->>>>>>> 7989dc773172898ad4bc2058e68fb54680aa066e:app/src/main/java/com/example/letsparty/games/ClearDanger.java
+
+
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.example.letsparty.GameUtil;
 import com.example.letsparty.R;
