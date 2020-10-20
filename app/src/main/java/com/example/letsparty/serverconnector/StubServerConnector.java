@@ -2,6 +2,12 @@ package com.example.letsparty.serverconnector;
 
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
+
+import com.example.letsparty.games.ClearDanger;
+import com.example.letsparty.games.Game;
+import com.example.letsparty.games.Landscape;
+
+import java.util.ArrayList;
 import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.HashSet;
@@ -17,7 +23,14 @@ import java.util.stream.Stream;
 public class StubServerConnector implements ServerConnector {
 
     Set<Room> rooms = new HashSet<>();
+
+//    @Override
+//    public Room createRoom(String playerId) {
+//        return null;
+//    }
+
     @Override
+
     public Room createRoom(FirebaseFunctions mFunctions, String playerId) {
         Player host = new Player(playerId);
         Room room = new Room("7ES7", host);

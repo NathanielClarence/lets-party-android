@@ -5,7 +5,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityLobbyBinding;
@@ -15,15 +22,21 @@ import com.example.letsparty.games.Game;
 import com.example.letsparty.games.Landscape;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.StubServerConnector;
+import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
+
 public class Lobby extends AppCompatActivity {
 
     private Room room;
     private List<String> gameIds;
+    private Bitmap bitmap;
+    private ImageView qrImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +46,11 @@ public class Lobby extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
-        binding.textView.setText(room.getRoomCode());
+
+        String roomCode = room.getRoomCode();
+
+        binding.textView.setText(roomCode);
+        generateQRCode(roomCode);
         //binding.editTextTextPersonName.on
         binding.button.setOnClickListener(view -> startMatch());
     }
@@ -54,5 +71,25 @@ public class Lobby extends AppCompatActivity {
 
     }
 
+    private void generateQRCode(String RoomCode){
+        qrImage = (ImageView) findViewById(R.id.imageView2);
 
+        WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int width = point.x;
+        int height = point.y;
+        int smallerDimension = width < height ? width : height;
+        smallerDimension = smallerDimension * 3 / 4;
+
+        QRGEncoder qrgEncoder = new QRGEncoder(RoomCode, null, QRGContents.Type.TEXT, smallerDimension);
+
+        try{
+            bitmap = qrgEncoder.encodeAsBitmap();
+            qrImage.setImageBitmap(bitmap);
+        }catch (WriterException e) {
+            Log.v("QR ERROR: ", e.toString());
+        }
+    }
 }

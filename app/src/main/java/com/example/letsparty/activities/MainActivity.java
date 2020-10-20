@@ -7,16 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.letsparty.entities.Room;
-import com.example.letsparty.serverconnector.FirebaseServerConnector;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.StubServerConnector;
 import com.example.letsparty.databinding.ActivityMainBinding;
+import com.example.letsparty.serverconnector.FirebaseServerConnector;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.functions.FirebaseFunctions;
 
 public class MainActivity<mFunctions> extends AppCompatActivity {
     private FirebaseFunctions mFunctions;
-
 
     public static final String ROOM = "room";
 
