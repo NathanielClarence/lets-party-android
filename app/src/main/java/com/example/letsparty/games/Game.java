@@ -24,7 +24,8 @@ public abstract class Game extends AppCompatActivity {
             Stream.of(
                     new SimpleEntry<>("ClearDanger", ClearDanger.class),
                     new SimpleEntry<>("Landscape", Landscape.class),
-                    new SimpleEntry<>("MeasureVoice", MeasureVoice.class)
+                    new SimpleEntry<>("MeasureVoice", MeasureVoice.class),
+                    new SimpleEntry<>("ShakePhone", ShakePhone.class)
             ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
     private long startTime;

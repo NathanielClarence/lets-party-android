@@ -29,24 +29,24 @@ public class MeasureVoice extends Game {
         setContentView(R.layout.activity_measure_voice);
 
         soundLevel = (EditText) findViewById(R.id.txt_sound_level);
+        start();
     }
 
-    public void start(View v) {
-        Button btn = (Button) v;
-        String tag = (String) btn.getTag();
+    public void start() {
         if (recorder == null) {
             recorder = new MediaRecorder();
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recorder.setOutputFile("/dev/null");
-            try {
+            recorder.getMaxAmplitude();
+            /*try {
                 recorder.prepare();
                 recorder.start();
             }catch(Exception e){
                 System.out.println(e);
                 android.util.Log.e("Exception: ", "Exception: "+e);
-            }
+            }*/
         }
     }
 
@@ -55,10 +55,10 @@ public class MeasureVoice extends Game {
         String tag = (String) btn.getTag();
 
         if("rec".equals(tag)){
-            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            recorder.setOutputFile("/dev/null");
+            //recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            //recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            //recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            //recorder.setOutputFile("/dev/null");
             try {
                 recorder.prepare();
                 recorder.start();
@@ -75,14 +75,15 @@ public class MeasureVoice extends Game {
 
         if("stop".equals(tag)){
             recorder.stop();
-            recorder.release();
-
-            soundDecibel = EMA_FILTER * recorder.getMaxAmplitude() + (1.0 - EMA_FILTER) * mEMA;
+            int maxAmp = recorder.getMaxAmplitude();
+            soundDecibel = EMA_FILTER * maxAmp + (1.0 - EMA_FILTER) * mEMA;
             soundLevel.setText(Double.toString(soundDecibel)+" dB");
             System.out.println(soundDecibel);
             recorder.reset();
+            recorder.release();
             //add points/success/failed prompt here
             System.out.println("recorded");
+            gameFinished();
         }
     }
 }
