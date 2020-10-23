@@ -1,8 +1,10 @@
 package com.example.letsparty.serverconnector;
 
+import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
 import com.example.letsparty.games.Game;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.List;
@@ -13,13 +15,12 @@ import java.util.List;
  */
 public interface ServerConnector {
 
-    //Room createRoom(String playerId);
-    Room createRoom(FirebaseFunctions mFunctions, String playerId);
-    Room joinRoom(String roomCode, String playerId);
+    Task<Room> createRoom(Player player);
+    Task<Room> joinRoom(String roomCode, String playerId);
     void quitRoom(String roomCode, String playerId);
     void changeNickname(String roomCode, String playerId, String nickname);
 
-    List<String> startMatch(String roomCode);
+    Task<List<String>> startMatch(String roomCode);
 
     //parameters not final, just placeholder for now
     void gameFinish(String roomCode, String playerId, String gameId, double points);

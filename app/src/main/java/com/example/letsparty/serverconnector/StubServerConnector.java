@@ -2,13 +2,8 @@ package com.example.letsparty.serverconnector;
 
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
-
-import com.example.letsparty.games.ClearDanger;
-import com.example.letsparty.games.Game;
-import com.example.letsparty.games.Landscape;
-
-import java.util.ArrayList;
-import com.google.firebase.functions.FirebaseFunctions;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,22 +19,18 @@ public class StubServerConnector implements ServerConnector {
 
     Set<Room> rooms = new HashSet<>();
 
-//    @Override
-//    public Room createRoom(String playerId) {
-//        return null;
-//    }
+    StubServerConnector(){}
 
     @Override
+    public Task<Room> createRoom(Player host) {
 
-    public Room createRoom(FirebaseFunctions mFunctions, String playerId) {
-        Player host = new Player(playerId);
         Room room = new Room("7ES7", host);
         rooms.add(room);
-        return room;
+        return Tasks.forResult(room);
     }
 
     @Override
-    public Room joinRoom(String roomCode, String playerId) {
+    public Task<Room> joinRoom(String roomCode, String playerId) {
         return null;
     }
 
@@ -54,9 +45,12 @@ public class StubServerConnector implements ServerConnector {
     }
 
     @Override
-    public List<String> startMatch(String roomCode) {
+    public Task<List<String>> startMatch(String roomCode) {
 
-         return Stream.of("ClearDanger", "Landscape", "MeasureVoice", "ShakePhone").collect(Collectors.toList());
+         return Tasks.forResult(
+                    Stream.of("ClearDanger", "Landscape", "MeasureVoice", "ShakePhone")
+                            .collect(Collectors.toList())
+         );
     }
 
     @Override

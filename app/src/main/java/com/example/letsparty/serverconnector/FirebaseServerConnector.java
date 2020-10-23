@@ -1,5 +1,6 @@
 package com.example.letsparty.serverconnector;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,22 +20,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 public class FirebaseServerConnector implements ServerConnector{
 
     Set<Room> rooms = new HashSet<>();
-    public FirebaseServerConnector(FirebaseFunctions mFunctions){
-       // this.mFunctions = mFunctions;
+    FirebaseFunctions mFunctions;
+
+    FirebaseServerConnector(FirebaseFunctions mFunctions){
+       this.mFunctions = mFunctions;
     }
 
-
     @Override
-    public Room createRoom(FirebaseFunctions mFunctions, String playerId) {
-        Player host = new Player(playerId);
+    public Task<Room> createRoom(Player player) {
+        //Player host = new Player(playerId);
 
-
-        getRoom(mFunctions, playerId)
+        return getRoom(mFunctions, player)
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
@@ -56,18 +56,16 @@ public class FirebaseServerConnector implements ServerConnector{
                         Log.d("createRoom", result );
 
                     }
-                });
-         Room room = new Room("7ES7", host);
-         rooms.add(room);
-         return room;
-
+                })
+                .onSuccessTask(roomCode -> Tasks.forResult(new Room(roomCode, player)));
     }
-    private Task<String> getRoom(FirebaseFunctions mFunctions, String playerName) {
+    private Task<String> getRoom(FirebaseFunctions mFunctions, Player player) {
         // Create the arguments to the callable function.
         // Here is a website to get help with calling functions
         // https://firebase.google.com/docs/functions/callable#java_2
         Map<String, Object> data = new HashMap<>();
-        data.put("playerName", playerName);
+        data.put("playerName", player.getNickname());
+        data.put("token", player.getToken());
        // data.put("push", true);
 
         return mFunctions
@@ -85,7 +83,7 @@ public class FirebaseServerConnector implements ServerConnector{
                 });
     }
     @Override
-    public Room joinRoom(String roomCode, String playerId) {
+    public Task<Room> joinRoom(String roomCode, String playerId) {
         return null;
     }
 
@@ -100,7 +98,7 @@ public class FirebaseServerConnector implements ServerConnector{
     }
 
     @Override
-    public List<String> startMatch(String roomCode) {
+    public Task<List<String>> startMatch(String roomCode) {
         return null;
     }
 

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.letsparty.entities.Room;
 import com.example.letsparty.games.Game;
 import com.example.letsparty.serverconnector.ServerConnector;
+import com.example.letsparty.serverconnector.ServerUtil;
 import com.example.letsparty.serverconnector.StubServerConnector;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class GameRunner extends AppCompatActivity {
             double points = (2000 - data.getLongExtra(Game.TIME_ELAPSED, 2000)) / 1000.0;
 
             //send game completion to server
-            ServerConnector sc = new StubServerConnector();
+            ServerConnector sc = ServerUtil.getServerConnector();
             sc.gameFinish(this.room.getRoomCode(), "1", data.getStringExtra(Game.GAME_ID), points);
         }
 

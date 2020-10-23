@@ -5,10 +5,12 @@ import java.io.Serializable;
 public class Player implements Serializable {
     private String id;
     private String nickname;
+    private String token;
 
-    public Player(String id) {
+    public Player(String id, String nickname,String token) {
         this.id = id;
-        this.nickname = "Player";
+        this.nickname = "Player-" + id;
+        this.token = token;
     }
 
     public String getId(){
@@ -21,5 +23,8 @@ public class Player implements Serializable {
 
     public void setNickname(String nickname){
         this.nickname = nickname;
+    }
+    public String getToken(){
+        return token;
     }
 }

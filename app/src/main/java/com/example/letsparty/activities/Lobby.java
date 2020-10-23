@@ -1,11 +1,6 @@
 package com.example.letsparty.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -14,19 +9,17 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityLobbyBinding;
 import com.example.letsparty.entities.Room;
-import com.example.letsparty.games.ClearDanger;
-import com.example.letsparty.games.Game;
-import com.example.letsparty.games.Landscape;
 import com.example.letsparty.serverconnector.ServerConnector;
-import com.example.letsparty.serverconnector.StubServerConnector;
+import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -56,18 +49,16 @@ public class Lobby extends AppCompatActivity {
     }
 
     private void startMatch() {
-        ServerConnector sc = new StubServerConnector();
-        //sc.startMatch(room.getRoomCode());
-        CompletableFuture
-                //tell server the match has started and obtain list of games from server
-                .supplyAsync(() -> sc.startMatch(room.getRoomCode()))
+        ServerConnector sc = ServerUtil.getServerConnector();
+        //tell server the match has started and obtain list of games from server
+        sc.startMatch(room.getRoomCode())
+            .addOnSuccessListener(gameIds -> {
                 //start the game runner activity
-                .thenAccept(gameIds -> {
-                    Intent intent = new Intent(this, GameRunner.class);
-                    intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
-                    intent.putExtra(MainActivity.ROOM, this.room);
-                    startActivity(intent);
-                });
+                Intent intent = new Intent(this, GameRunner.class);
+                intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
+                intent.putExtra(MainActivity.ROOM, this.room);
+                startActivity(intent);
+            });
 
     }
 
