@@ -99,6 +99,8 @@ public class FaceDirection extends Game {
                 if (direction.equals(faceThis)){
                     //add points to this user
                     //move to next game/end
+                    System.out.println("Success");
+                    gameFinished();
                 }
             }
 
