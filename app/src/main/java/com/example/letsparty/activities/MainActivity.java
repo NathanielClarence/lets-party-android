@@ -92,6 +92,9 @@ public class MainActivity<mFunctions> extends AppCompatActivity implements NameD
 
     private void onJoinClicked(){
         Log.d("Test", "Join button clicked");
+
+        Intent intent = new Intent(this, JoinGame.class);
+        startActivity(intent);
     }
 
    /* @Override

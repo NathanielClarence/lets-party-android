@@ -76,7 +76,7 @@ public class Lobby extends AppCompatActivity {
         int smallerDimension = width < height ? width : height;
         smallerDimension = smallerDimension * 3 / 4;
 
-        QRGEncoder qrgEncoder = new QRGEncoder(RoomCode, null, QRGContents.Type.TEXT, smallerDimension);
+        QRGEncoder qrgEncoder = new QRGEncoder("letsparty::"+RoomCode, null, QRGContents.Type.TEXT, smallerDimension);
 
         try{
             bitmap = qrgEncoder.encodeAsBitmap();
