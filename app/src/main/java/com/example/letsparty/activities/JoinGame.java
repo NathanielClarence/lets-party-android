@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityJoinGameBinding;
@@ -19,12 +17,7 @@ import com.google.zxing.Result;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class JoinGame extends AppCompatActivity implements ZXingScannerView.ResultHandler{
-
-    private Button btn_joinGame;
-    private Button btn_scan;
-    private EditText txt_roomCode;
     private String roomCode;
-
     private ZXingScannerView mScannerView;
 
     @Override
@@ -39,10 +32,6 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         setContentView(R.layout.activity_join_game);
 
         // set View and bindings
-        btn_joinGame = (Button) findViewById(R.id.btn_joinRoom);
-        txt_roomCode = (EditText) findViewById(R.id.edt_room);
-        btn_scan = (Button) findViewById(R.id.btn_scanQR);
-
         ActivityJoinGameBinding binding = ActivityJoinGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -50,13 +39,10 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         binding.btnScanQR.setOnClickListener(view -> this.qrCodeScan());
 
         try{
-            //Log.println(Log.INFO, "NOTICE", "SENPAI");
             Intent intent = getIntent();
             roomCode = (String) intent.getStringExtra("SCANRESULT");
-            //Log.println(Log.INFO, "NOTICEME", roomCode);
             binding.edtRoom.setText(roomCode);
             roomCode = "";
-            //Log.println(Log.INFO, "NOTICEME", "SENPAI");
         }catch (Exception e){
             Log.println(Log.ERROR, "EXC", e.toString());
         }
@@ -94,16 +80,13 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
     public void handleResult(Result rawResult) {
         // Do something with the result here
         // Prints scan results
-        //Logger.verbose("result", rawResult.getText());
         Log.println(Log.INFO, "RESULT", rawResult.getText());
         // Prints the scan format (qrcode, pdf417 etc.)
         //Logger.verbose("result", rawResult.getBarcodeFormat().toString());
         //If you would like to resume scanning, call this method below:
-        //mScannerView.resumeCameraPreview(this);
         roomCode = rawResult.getText();
         Log.println(Log.INFO, "NN", roomCode.substring(0,11));
         if (roomCode.substring(0,11).equals("letsparty::")){
-            txt_roomCode.setText(roomCode.substring(11));
             Intent joinIntent = new Intent(this, JoinGame.class);
             joinIntent.putExtra("SCANRESULT", roomCode.substring(11));
             startActivity(joinIntent);
