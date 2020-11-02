@@ -87,18 +87,18 @@ public class Lobby extends AppCompatActivity {
         binding.startButton.setEnabled(false);
         //binding.readyButton.setEnabled(false);
         waitForMatchStart()
-            .addOnSuccessListener(gameIds -> {
-                Intent intent = new Intent(this, GameRunner.class);
-                intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
-                intent.putExtra(MainActivity.ROOM, this.room);
-                intent.putExtra(MainActivity.PLAYER, this.player);
-                startActivity(intent);
-            })
-            .addOnFailureListener(ex -> {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                binding.startButton.setEnabled(true);
-                //binding.readyButton.setEnabled(true);
-            });
+                .addOnSuccessListener(gameIds -> {
+                    Intent intent = new Intent(this, GameRunner.class);
+                    intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
+                    intent.putExtra(MainActivity.ROOM, this.room);
+                    intent.putExtra(MainActivity.PLAYER, this.player);
+                    startActivity(intent);
+                })
+                .addOnFailureListener(ex -> {
+                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    binding.startButton.setEnabled(true);
+                    //binding.readyButton.setEnabled(true);
+                });
     }
 
 

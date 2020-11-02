@@ -1,18 +1,16 @@
 package com.example.letsparty.serverconnector;
 
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
-import com.example.letsparty.exceptions.RoomNotFoundException;
-import com.example.letsparty.games.Game;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
@@ -20,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A server connector that is a stub, used for development.
@@ -32,9 +32,6 @@ public class StubServerConnector implements ServerConnector {
 
     StubServerConnector(){
        this.context = new Activity();
-    }
-    StubServerConnector(Context context){
-        this.context = context;
     }
 
 
@@ -49,19 +46,7 @@ public class StubServerConnector implements ServerConnector {
 
     @Override
     public Task<Room> joinRoom(String roomCode, Player player) {
-        //test the case if room number is not available
-        if (!roomCode.equals("701N")){
-            return Tasks.forException(new RoomNotFoundException(roomCode));
-        }
-
-        //create a new room with a fake host
-        Player host = new Player("TEST HOST", "Host", "12345");
-        Room room = new Room("701N", host);
-        rooms.add(room);
-
-        //add the player
-        room.addPlayer(player);
-        return Tasks.forResult(room);
+        return null;
     }
 
     @Override
@@ -76,13 +61,15 @@ public class StubServerConnector implements ServerConnector {
 
     @Override
     public Task<List<String>> startMatch(String roomCode) {
-        ArrayList<String> gameList = new ArrayList<>(Game.GAME_IDS.keySet());
+        ArrayList<String> gameList = new ArrayList<>(
+                                        Stream.of("ClearDanger", "Landscape", "MeasureVoice", "ShakePhone")
+                                                .collect(Collectors.toList())
+                                    );
 
         new Handler().postDelayed(() -> {
             LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
             Intent intent = new Intent("players_ready");
-            intent.putStringArrayListExtra("gameIds", gameList);
-            Log.d("boradcast", "start match sent");
+            intent.putStringArrayListExtra("game_ids", gameList);
             lbm.sendBroadcast(intent);
         }, 3000);
 
@@ -94,7 +81,6 @@ public class StubServerConnector implements ServerConnector {
         new Handler().postDelayed(() -> {
             LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
             Intent intent = new Intent("game_ready");
-            Log.d("boradcast", "game sent");
             lbm.sendBroadcast(intent);
         }, 3000);
     }
