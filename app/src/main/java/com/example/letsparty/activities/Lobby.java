@@ -30,6 +30,7 @@ import com.example.letsparty.entities.Room;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 
+import com.example.letsparty.serverconnector.StubServerConnector;
 import com.google.zxing.WriterException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -104,7 +105,7 @@ public class Lobby extends AppCompatActivity {
                 startActivity(intent);
             })
             .addOnFailureListener(ex -> {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT);
+                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 binding.startButton.setEnabled(true);
                 //binding.readyButton.setEnabled(true);
             });
@@ -113,7 +114,7 @@ public class Lobby extends AppCompatActivity {
 
 
     private Task<List<String>> waitForMatchStart() {
-        TaskCompletionSource tcs = new TaskCompletionSource();
+        TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
 
         //the following snippet is UNTESTED code for receiving a message from Firebase when all players are ready
         /*BroadcastReceiver br = new BroadcastReceiver() {

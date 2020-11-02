@@ -80,7 +80,18 @@ public class GameRunner extends AppCompatActivity {
     }
 
     private Task<Boolean> waitForNextGame(){
-        TaskCompletionSource tcs = new TaskCompletionSource();
+        TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
+
+        //the following snippet is UNTESTED code for receiving a message from Firebase when all players are ready
+        /*BroadcastReceiver br = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                tcs.setResult(true);
+            }
+        };
+        IntentFilter filter = new IntentFilter("game_ready");
+        registerReceiver(br, filter);*/
+
         tcs.setResult(true); //placeholder
         return tcs.getTask();
     }
