@@ -123,7 +123,7 @@ public class MainActivity<mFunctions> extends AppCompatActivity implements NameD
     public void onNameDialogPositiveClick(DialogFragment dialog, Player player) {
         //contact server and get a new room id
         ServerConnector sc = ServerUtil.getServerConnector();
-     
+
         try {
             sc.createRoom(player)
                     .addOnSuccessListener(room -> {
