@@ -97,6 +97,7 @@ public class Lobby extends AppCompatActivity {
                 Intent intent = new Intent(this, GameRunner.class);
                 intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
                 intent.putExtra(MainActivity.ROOM, this.room);
+                intent.putExtra(MainActivity.PLAYER, this.player);
                 startActivity(intent);
             })
             .addOnFailureListener(ex -> {

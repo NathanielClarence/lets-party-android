@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
 import com.example.letsparty.games.Game;
 import com.example.letsparty.serverconnector.ServerConnector;
@@ -25,6 +26,7 @@ import java.util.List;
 
 public class GameRunner extends AppCompatActivity {
     private Room room;
+    private Player player;
     private List<String> gameIds;
 
     @Override
@@ -34,6 +36,7 @@ public class GameRunner extends AppCompatActivity {
         Intent intent = getIntent();
         this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
         this.gameIds = intent.getStringArrayListExtra("gameIds");
+        this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
 
         //only start the game if the state isn't recreated
         if (savedInstanceState == null)
@@ -62,7 +65,7 @@ public class GameRunner extends AppCompatActivity {
 
             //send game completion to server
             ServerConnector sc = ServerUtil.getServerConnector(this);
-            sc.gameFinish(this.room.getRoomCode(), "1", data.getStringExtra(Game.GAME_ID), points);
+            sc.gameFinish(this.room.getRoomCode(), player.getId(), data.getStringExtra(Game.GAME_ID), points);
         }
 
         int i = requestCode + 1;
