@@ -2,6 +2,7 @@ package com.example.letsparty.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.letsparty.PlayerUtil;
 import com.example.letsparty.databinding.ActivityMainBinding;
@@ -25,7 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.example.letsparty.entities.Player;
 
-public class MainActivity<mFunctions> extends AppCompatActivity {
+public class MainActivity<mFunctions> extends AppCompatActivity implements NameDialog.NameDialogListener {
     private FirebaseFunctions mFunctions;
 
     public static final String ROOM = "room";
@@ -75,25 +77,71 @@ public class MainActivity<mFunctions> extends AppCompatActivity {
 
     }
 
-    private void onHostClicked(String token){
+    private void onHostClicked( String token){
         //contact server and get a new room id
         Log.d("onHostClicked", "Checking");
-        Player host = new Player("3456", "Dimitri", token);
-        //get server connector
-        ServerConnector sc = ServerUtil.getServerConnector();
 
-        //get player uuid
-        sc.createRoom(host)
-            .addOnSuccessListener(room -> {
-                //go to the lobby
-                Intent intent = new Intent(this, Lobby.class);
-                intent.putExtra(ROOM, room);
-                startActivity(intent);
-            });
+        //get server connector
+
+        NameDialog dialog = new NameDialog();
+        dialog.show(getSupportFragmentManager(), "name");
+
+
+
     }
 
     private void onJoinClicked(){
         Log.d("Test", "Join button clicked");
     }
 
+   /* @Override
+    public void onRoomNumberEntered(String roomNumber) {
+        //contact server and get a new room id
+        ServerConnector sc = new StubServerConnector();
+        Room room;
+        try {
+            room = sc.joinRoom(roomNumber, this.playerId);
+        }catch (RoomNotFoundException e){
+            //if room not found, display an error message
+            String errorText = getString(R.string.error_room_number) + roomNumber;
+            Toast errorToast = Toast.makeText(getApplicationContext(), errorText, Toast.LENGTH_SHORT);
+            errorToast.show();
+            return;
+        }
+
+        //go to the lobby
+        Intent intent = new Intent(this, Lobby.class);
+        intent.putExtra(ROOM, room);
+        intent.putExtra(PLAYER_ID, playerId);
+        startActivity(intent);
+    } */
+
+    @Override
+    public void onNameDialogPositiveClick(DialogFragment dialog, Player player) {
+        //contact server and get a new room id
+        ServerConnector sc = ServerUtil.getServerConnector();
+     
+        try {
+            sc.createRoom(player)
+                    .addOnSuccessListener(room -> {
+                        //  roomCreated = room;
+                        //  Log.d("ROOM_CREATED", roomCreated.toString());
+                        Intent intent = new Intent(this, Lobby.class);
+                        intent.putExtra(ROOM, room);
+                        //  intent.putExtra(PLAYER_ID, playerId);
+                        startActivity(intent);
+                    });
+        }catch (Exception e){
+            //if room not found, display an error message
+           /* String errorText = getString(R.string.error_room_number) + name;
+            Toast errorToast = Toast.makeText(getApplicationContext(), errorText, Toast.LENGTH_SHORT);
+            errorToast.show(); */
+            return;
+        }
+    }
+
+    @Override
+    public void onNameDialogNegativeClick(DialogFragment dialog) {
+
+    }
 }

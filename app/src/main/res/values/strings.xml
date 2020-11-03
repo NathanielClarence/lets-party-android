@@ -3,9 +3,13 @@
     <!-- Strings used in Main Menu -->
     <string name="menu_host">HOST MATCH</string>
     <string name="menu_join">JOIN MATCH</string>
+    <string name="name">Name</string>
+    <string name="enter_room_number">Enter Room Number</string>
+    <string name="error_room_number">Cannot find room with room number </string>
+    <string name="dialog_join">Join</string>
     <!-- Strings used in Lobby -->
     <string name="lobby_start">START GAME</string>
-    <string name="lobby_nickname_hint">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Nickname...\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
+    <string name="lobby_nickname_hint">Nickname</string>
     <string name="lobby_player_list">PLAYER LIST</string>
     <string name="title_activity_lobby">Lobby</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
@@ -15,8 +19,17 @@
     <!-- Strings used in Login -->
     <string name="login_title">LOGIN</string>
 
+    <!--Common Strings-->
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="title_activity_name_dialog">NameDialog</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>

@@ -44,6 +44,8 @@ public class Lobby extends AppCompatActivity {
 
         binding.textView.setText(roomCode);
         generateQRCode(roomCode);
+
+
         //binding.editTextTextPersonName.on
         binding.button.setOnClickListener(view -> startMatch());
     }

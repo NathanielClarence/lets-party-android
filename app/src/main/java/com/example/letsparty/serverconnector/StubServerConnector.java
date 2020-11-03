@@ -1,5 +1,7 @@
 package com.example.letsparty.serverconnector;
 
+import android.content.Context;
+
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
 import com.google.android.gms.tasks.Task;
@@ -21,12 +23,14 @@ public class StubServerConnector implements ServerConnector {
 
     StubServerConnector(){}
 
+
     @Override
     public Task<Room> createRoom(Player host) {
 
-        Room room = new Room("7ES7", host);
+       Room room = new Room("7ES7", host);
         rooms.add(room);
         return Tasks.forResult(room);
+
     }
 
     @Override

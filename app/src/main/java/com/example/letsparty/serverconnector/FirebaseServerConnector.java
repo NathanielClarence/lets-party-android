@@ -1,5 +1,6 @@
 package com.example.letsparty.serverconnector;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -31,10 +32,10 @@ public class FirebaseServerConnector implements ServerConnector{
     }
 
     @Override
-    public Task<Room> createRoom(Player player) {
-        //Player host = new Player(playerId);
+    public Task<Room> createRoom(Player host) {
 
-        return getRoom(mFunctions, player)
+// Dialog for player name
+        return getRoom(mFunctions, host)
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
@@ -57,7 +58,7 @@ public class FirebaseServerConnector implements ServerConnector{
 
                     }
                 })
-                .onSuccessTask(roomCode -> Tasks.forResult(new Room(roomCode, player)));
+                .onSuccessTask(roomCode -> Tasks.forResult(new Room(roomCode, host)));
     }
     private Task<String> getRoom(FirebaseFunctions mFunctions, Player player) {
         // Create the arguments to the callable function.
