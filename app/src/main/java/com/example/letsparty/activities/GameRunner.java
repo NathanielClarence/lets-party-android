@@ -1,11 +1,16 @@
 package com.example.letsparty.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.letsparty.entities.Room;
 import com.example.letsparty.games.Game;
@@ -56,7 +61,7 @@ public class GameRunner extends AppCompatActivity {
             double points = (2000 - data.getLongExtra(Game.TIME_ELAPSED, 2000)) / 1000.0;
 
             //send game completion to server
-            ServerConnector sc = ServerUtil.getServerConnector();
+            ServerConnector sc = ServerUtil.getServerConnector(this);
             sc.gameFinish(this.room.getRoomCode(), "1", data.getStringExtra(Game.GAME_ID), points);
         }
 
@@ -83,16 +88,13 @@ public class GameRunner extends AppCompatActivity {
         TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
 
         //the following snippet is UNTESTED code for receiving a message from Firebase when all players are ready
-        /*BroadcastReceiver br = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                tcs.setResult(true);
-            }
-        };
+        BroadcastReceiver br = new GameBroadcastReceiver(tcs);
         IntentFilter filter = new IntentFilter("game_ready");
-        registerReceiver(br, filter);*/
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        lbm.registerReceiver(br, filter);
+        Log.d("broadcast", "next game registered");
 
-        tcs.setResult(true); //placeholder
+        //tcs.setResult(true); //placeholder
         return tcs.getTask();
     }
 
@@ -106,5 +108,21 @@ public class GameRunner extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         this.gameIds = savedInstanceState.getStringArrayList("gameIds");
+    }
+
+    private static class GameBroadcastReceiver extends BroadcastReceiver{
+        private TaskCompletionSource<Boolean> tcs;
+
+        GameBroadcastReceiver(TaskCompletionSource<Boolean> tcs){
+            this.tcs = tcs;
+        }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            tcs.setResult(true);
+            Log.d("broadcast", "next game received");
+
+            LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
+            lbm.unregisterReceiver(this);
+        }
     }
 }
