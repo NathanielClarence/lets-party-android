@@ -57,6 +57,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
     }
 
     private void qrCodeScan(){
+        //open cam and start scan qrcode
         setContentView(mScannerView);
     }
 
@@ -87,10 +88,12 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         roomCode = rawResult.getText();
         Log.println(Log.INFO, "NN", roomCode.substring(0,11));
         if (roomCode.substring(0,11).equals("letsparty::")){
+            //send scan result to this class if qrcode is valid
             Intent joinIntent = new Intent(this, JoinGame.class);
             joinIntent.putExtra("SCANRESULT", roomCode.substring(11));
             startActivity(joinIntent);
         }else {
+            //invalid qrcode result
             Log.println(Log.INFO, "QRCODE:", "Invalid");
             mScannerView.resumeCameraPreview(this);
         }
