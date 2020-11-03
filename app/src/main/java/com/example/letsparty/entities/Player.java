@@ -9,7 +9,7 @@ public class Player implements Serializable {
 
     public Player(String id, String nickname,String token) {
         this.id = id;
-        this.nickname = "Player-" + id;
+        this.nickname = nickname + id;
         this.token = token;
     }
 
