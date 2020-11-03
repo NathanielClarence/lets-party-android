@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -41,6 +42,9 @@ public class StubServerConnector implements ServerConnector {
     StubServerConnector(){
        this.context = new Activity();
     }
+    StubServerConnector(Context context){
+        this.context = context;
+    }
 
 
     @Override
@@ -56,7 +60,7 @@ public class StubServerConnector implements ServerConnector {
     public Task<Room> joinRoom(String roomCode, Player player) {
         //test the case if room number is not available
         if (!roomCode.equals("701N")){
-            throw new RoomNotFoundException(roomCode);
+            return Tasks.forException(new RoomNotFoundException(roomCode));
         }
 
         //create a new room with a fake host
@@ -82,14 +86,14 @@ public class StubServerConnector implements ServerConnector {
     @Override
     public Task<List<String>> startMatch(String roomCode) {
         ArrayList<String> gameList = new ArrayList<>(
-                                        Stream.of("ClearDanger", "Landscape", "MeasureVoice", "ShakePhone")
-                                                .collect(Collectors.toList())
+                                        Game.GAME_IDS.keySet().stream().collect(Collectors.toList())
                                     );
 
         new Handler().postDelayed(() -> {
             LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
             Intent intent = new Intent("players_ready");
-            intent.putStringArrayListExtra("game_ids", gameList);
+            intent.putStringArrayListExtra("gameIds", gameList);
+            Log.d("boradcast", "start match sent");
             lbm.sendBroadcast(intent);
         }, 3000);
 
@@ -101,6 +105,7 @@ public class StubServerConnector implements ServerConnector {
         new Handler().postDelayed(() -> {
             LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
             Intent intent = new Intent("game_ready");
+            Log.d("boradcast", "game sent");
             lbm.sendBroadcast(intent);
         }, 3000);
     }
