@@ -1,6 +1,12 @@
 package com.example.letsparty.activities;
 
 
+<<<<<<< HEAD
+=======
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+>>>>>>> join-room
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,27 +14,44 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+<<<<<<< HEAD
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+=======
+import android.os.Handler;
+
+import android.view.View;
+import android.widget.Toast;
+>>>>>>> join-room
 
 import com.example.letsparty.databinding.ActivityLobbyBinding;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
+<<<<<<< HEAD
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+=======
+
+>>>>>>> join-room
 import com.google.zxing.WriterException;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -79,8 +102,14 @@ public class Lobby extends AppCompatActivity {
         //tell server the match has started and obtain list of games from server
         sc.startMatch(room.getRoomCode());
         readyForMatch();
+<<<<<<< HEAD
     }
 
+=======
+
+
+    }
+>>>>>>> join-room
     private void readyForMatch() {
         binding.startButton.setEnabled(false);
         //binding.readyButton.setEnabled(false);
@@ -99,12 +128,21 @@ public class Lobby extends AppCompatActivity {
             });
     }
 
+<<<<<<< HEAD
 
 
     private Task<List<String>> waitForMatchStart() {
         TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
 
         //use broadcast receiver to receive messages to start the match
+=======
+
+
+    private Task<List<String>> waitForMatchStart() {
+        TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
+
+        //the following snippet is UNTESTED code for receiving a message from Firebase when all players are ready
+>>>>>>> join-room
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
             @Override
@@ -121,6 +159,13 @@ public class Lobby extends AppCompatActivity {
         lbm.registerReceiver(br, filter);
         Log.d("broadcast", "start match registered");
 
+<<<<<<< HEAD
+=======
+        //the following code is a stub for testing purposes
+        //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
+        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
+
+>>>>>>> join-room
         return tcs.getTask();
     }
 

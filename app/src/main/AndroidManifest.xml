@@ -25,12 +25,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".games.WordColorV1">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activities.NameDialog"
+            android:label="@string/title_activity_name_dialog">
         </activity>
 
         <activity android:name=".activities.JoinGame" />
@@ -46,7 +52,9 @@
             android:value="barcode" />
 
         <activity android:name=".activities.MainActivity">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
         <activity android:name=".Login" />
         <activity android:name=".activities.Results" />
@@ -57,7 +65,9 @@
             android:name=".games.Landscape"
             android:configChanges="orientation|screenSize" />
         <activity android:name=".games.ClearDanger" />
-        <activity android:name=".games.MeasureVoice" />
+        <activity android:name=".games.MeasureVoice">
+
+        </activity>
         <activity android:name=".games.ShakePhone" />
         <activity android:name=".games.FaceDirection" />
 

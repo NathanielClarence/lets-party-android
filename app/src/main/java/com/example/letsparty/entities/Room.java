@@ -3,6 +3,10 @@ package com.example.letsparty.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.Map;
+>>>>>>> join-room
 import java.util.Objects;
 
 public class Room implements Serializable {
