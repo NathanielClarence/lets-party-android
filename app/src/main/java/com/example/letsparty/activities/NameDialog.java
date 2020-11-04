@@ -51,7 +51,6 @@ public class NameDialog extends DialogFragment {
 
         // Get the layout inflater
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        ServerConnector sc = ServerUtil.getServerConnector();
         SharedPreferences prefs = getContext().getSharedPreferences("TOKEN_PREF", getContext().MODE_PRIVATE);
         final String token = prefs.getString("token", "");
 

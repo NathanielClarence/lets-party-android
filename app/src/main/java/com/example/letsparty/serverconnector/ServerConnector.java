@@ -17,8 +17,9 @@ import java.util.List;
  */
 public interface ServerConnector {
 
-    Task<Room> createRoom( Player player);
-    Task<Room> joinRoom(String roomCode, String playerId);
+
+    Task<Room> createRoom(Player player);
+    Task<Room> joinRoom(String roomCode, Player player);
     void quitRoom(String roomCode, String playerId);
     void changeNickname(String roomCode, String playerId, String nickname);
 

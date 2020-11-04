@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         ActivityJoinGameBinding binding = ActivityJoinGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.btnJoinRoom.setOnClickListener(view -> this.joinRoom(binding.edtRoom.getText().toString()));
+        binding.btnJoinRoom.setOnClickListener(view -> this.joinRoom(binding.edtRoom.getText().toString(), binding.edtName.getText().toString()));
         binding.btnScanQR.setOnClickListener(view -> this.qrCodeScan());
 
         try{
@@ -51,9 +52,16 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         mScannerView = new ZXingScannerView(this);
     }
 
-    private void joinRoom(String room){
+    private void joinRoom(String room, String playerName){
         roomCode = room;
         Log.println(Log.INFO, "JOIN ROOM: ", "joining "+roomCode);
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("roomCode", roomCode);
+        returnIntent.putExtra("playerName", playerName);
+        setResult(Activity.RESULT_OK, returnIntent);
+
+        this.finish();
     }
 
     private void qrCodeScan(){
