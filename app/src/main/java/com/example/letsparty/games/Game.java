@@ -26,7 +26,8 @@ public abstract class Game extends AppCompatActivity {
                     new SimpleEntry<>("Landscape", Landscape.class),
                     new SimpleEntry<>("MeasureVoice", MeasureVoice.class),
                     new SimpleEntry<>("ShakePhone", ShakePhone.class),
-                    new SimpleEntry<>("FaceDirection", FaceDirection.class)
+                    new SimpleEntry<>("FaceDirection", FaceDirection.class),
+                    new SimpleEntry<>("WordColorV1", WordColorV1.class)
             ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
     private long startTime;
