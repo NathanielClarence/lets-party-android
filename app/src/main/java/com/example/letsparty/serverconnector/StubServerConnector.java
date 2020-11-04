@@ -1,7 +1,6 @@
 package com.example.letsparty.serverconnector;
 
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,23 +11,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
-
+import com.example.letsparty.exceptions.RoomNotFoundException;
+import com.example.letsparty.games.Game;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
-import com.example.letsparty.exceptions.RoomNotFoundException;
-import com.example.letsparty.games.ClearDanger;
-import com.example.letsparty.games.Game;
-import com.example.letsparty.games.Landscape;
-
 import java.util.ArrayList;
-import com.google.firebase.functions.FirebaseFunctions;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A server connector that is a stub, used for development.
@@ -85,9 +76,7 @@ public class StubServerConnector implements ServerConnector {
 
     @Override
     public Task<List<String>> startMatch(String roomCode) {
-        ArrayList<String> gameList = new ArrayList<>(
-                                        Game.GAME_IDS.keySet().stream().collect(Collectors.toList())
-                                    );
+        ArrayList<String> gameList = new ArrayList<>(Game.GAME_IDS.keySet());
 
         new Handler().postDelayed(() -> {
             LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);

@@ -41,7 +41,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
 
         try{
             Intent intent = getIntent();
-            roomCode = (String) intent.getStringExtra("SCANRESULT");
+            roomCode = intent.getStringExtra("SCANRESULT");
             binding.edtRoom.setText(roomCode);
             roomCode = "";
         }catch (Exception e){

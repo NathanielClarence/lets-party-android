@@ -1,9 +1,6 @@
 package com.example.letsparty.activities;
 
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,31 +8,27 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.os.Handler;
-
-import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.letsparty.databinding.ActivityLobbyBinding;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
-
-import com.google.zxing.WriterException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -86,9 +79,8 @@ public class Lobby extends AppCompatActivity {
         //tell server the match has started and obtain list of games from server
         sc.startMatch(room.getRoomCode());
         readyForMatch();
-
-
     }
+
     private void readyForMatch() {
         binding.startButton.setEnabled(false);
         //binding.readyButton.setEnabled(false);
@@ -112,7 +104,7 @@ public class Lobby extends AppCompatActivity {
     private Task<List<String>> waitForMatchStart() {
         TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
 
-        //the following snippet is UNTESTED code for receiving a message from Firebase when all players are ready
+        //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
             @Override
@@ -129,10 +121,6 @@ public class Lobby extends AppCompatActivity {
         lbm.registerReceiver(br, filter);
         Log.d("broadcast", "start match registered");
 
-        //the following code is a stub for testing purposes
-        //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
-
         return tcs.getTask();
     }
 
@@ -144,7 +132,7 @@ public class Lobby extends AppCompatActivity {
         display.getSize(point);
         int width = point.x;
         int height = point.y;
-        int smallerDimension = width < height ? width : height;
+        int smallerDimension = Math.min(width, height);
         smallerDimension = smallerDimension * 3 / 4;
 
         QRGEncoder qrgEncoder = new QRGEncoder("letsparty::"+RoomCode, null, QRGContents.Type.TEXT, smallerDimension);

@@ -1,17 +1,8 @@
 package com.example.letsparty.entities;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class Room implements Serializable {

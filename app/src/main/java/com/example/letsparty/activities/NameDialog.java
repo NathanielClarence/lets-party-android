@@ -1,18 +1,8 @@
 package com.example.letsparty.activities;
 
-import com.example.letsparty.R;
-import com.example.letsparty.entities.Player;
-import com.example.letsparty.entities.Room;
-import com.example.letsparty.serverconnector.ServerConnector;
-import com.example.letsparty.serverconnector.ServerUtil;
-import com.google.android.gms.tasks.Tasks;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,10 +13,13 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.letsparty.PlayerUtil;
+import com.example.letsparty.R;
+import com.example.letsparty.entities.Player;
+
 public class NameDialog extends DialogFragment {
     private EditText playerNameText;
-    private Room roomCreated;
-    private Activity activity;
+
     public interface NameDialogListener {
         void onNameDialogPositiveClick(DialogFragment dialog, Player player);
         void onNameDialogNegativeClick(DialogFragment dialog);
@@ -42,6 +35,7 @@ public class NameDialog extends DialogFragment {
             listener = null;
         }
     }
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -59,30 +53,19 @@ public class NameDialog extends DialogFragment {
         final View view =inflater.inflate(R.layout.activity_name_dialog, null);
         builder.setView(view)
                 // Add action buttons=
-                .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        playerNameText =  view.findViewById(R.id.name);
-                        String playerName = playerNameText.getText().toString();
-                        Player player = new Player("1", playerName, token);
-                        /* roomCreated = new Room("Waiting", player); */
-                        Log.d("NAME", playerName);
-                        dialog.dismiss();
-                        if (listener != null){
-                            listener.onNameDialogPositiveClick(NameDialog.this, player);
-                        }
+                .setPositiveButton(R.string.submit, (dialog, id) -> {
+                    playerNameText =  view.findViewById(R.id.name);
+                    String playerName = playerNameText.getText().toString();
+                    Player player = new Player(PlayerUtil.getPlayerId(), playerName, token);
+                    /* roomCreated = new Room("Waiting", player); */
+                    Log.d("NAME", playerName);
+                    dialog.dismiss();
+                    if (listener != null){
+                        listener.onNameDialogPositiveClick(NameDialog.this, player);
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        NameDialog.this.getDialog().cancel();
-                    }
-                });
+                .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
         return builder.create();
     }
-    private void goToLobby(Room room) {
-        Intent intent = new Intent(getActivity(), Lobby.class);
-        intent.putExtra(MainActivity.ROOM, room);
-        startActivity(intent);
-    }
+
 }

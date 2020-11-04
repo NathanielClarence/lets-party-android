@@ -32,9 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.NameDialog"
-            android:label="@string/title_activity_name_dialog"></activity>
+
         <activity android:name=".activities.JoinGame" />
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
@@ -59,7 +57,7 @@
             android:name=".games.Landscape"
             android:configChanges="orientation|screenSize" />
         <activity android:name=".games.ClearDanger" />
-        <activity android:name=".games.MeasureVoice"></activity>
+        <activity android:name=".games.MeasureVoice" />
         <activity android:name=".games.ShakePhone" />
         <activity android:name=".games.FaceDirection" />
 

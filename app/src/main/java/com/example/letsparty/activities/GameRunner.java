@@ -17,7 +17,6 @@ import com.example.letsparty.entities.Room;
 import com.example.letsparty.games.Game;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
-import com.example.letsparty.serverconnector.StubServerConnector;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
