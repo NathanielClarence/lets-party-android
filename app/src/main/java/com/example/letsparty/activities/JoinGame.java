@@ -85,7 +85,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
 
             Intent returnIntent = new Intent();
             returnIntent.putExtra("roomCode", roomCode);
-            returnIntent.putExtra("playerName", playerName);
+            returnIntent.putExtra("playerName", uname);
             setResult(Activity.RESULT_OK, returnIntent);
 
             this.finish();
