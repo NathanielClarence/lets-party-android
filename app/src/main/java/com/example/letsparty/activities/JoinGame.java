@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityJoinGameBinding;
@@ -126,7 +127,6 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         Log.println(Log.INFO, "NN", roomCode.substring(0,11));
         if (roomCode.substring(0,11).equals("letsparty::")){
             //send scan result to this class if qrcode is valid
-            //finish();
             Intent joinIntent = new Intent(this, JoinGame.class);
             joinIntent.putExtra("SCANRESULT", roomCode.substring(11));
             joinIntent.putExtra("USERNICK", uname);
@@ -135,6 +135,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
             //invalid qrcode result
             Log.println(Log.INFO, "QRCODE:", "Invalid");
             mScannerView.resumeCameraPreview(this);
+            Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show();
         }
     }
 }
