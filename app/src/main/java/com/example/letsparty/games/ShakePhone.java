@@ -46,7 +46,7 @@ public class ShakePhone extends Game {
             mAccel = mAccel * 0.9f + delta;
             if (mAccel > 12) {
                 txt.setText("Shake motion detected");
-                gameFinished();
+                gameFinished(true);
             }
         }
         @Override

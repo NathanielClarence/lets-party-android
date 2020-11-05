@@ -74,7 +74,7 @@ public class MeasureVoice extends Game {
         recorder.reset();
         recorder.release();
         System.out.println("recorded");
-        gameFinished();
+        gameFinished(true);
     }
 
 }
