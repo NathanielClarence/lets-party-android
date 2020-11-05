@@ -23,7 +23,9 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginBottom="4dp"
-            android:hint="@string/name" />
+            android:hint="@string/name"
+            android:textColorHint="@color/main_text"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
