@@ -1,17 +1,10 @@
 package com.example.letsparty.entities;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Room implements Serializable {
     private String roomCode;
@@ -27,6 +20,10 @@ public class Room implements Serializable {
 
     public String getRoomCode(){
       return roomCode;
+    }
+
+    public Player getHost(){
+        return this.host;
     }
 
     public List<Player> getPlayers(){
@@ -46,5 +43,20 @@ public class Room implements Serializable {
                 .filter(p -> p.equals(player))
                 .findFirst()
                 .ifPresent(p -> p.setNickname(nickname));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return roomCode.equals(room.roomCode) &&
+                host.equals(room.host) &&
+                players.equals(room.players);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roomCode, host, players);
     }
 }

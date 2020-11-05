@@ -10,31 +10,45 @@
         android:id="@+id/edt_room"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="28dp"
         android:ems="10"
         android:hint="Enter Room Code"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_joinRoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="29dp"
-        android:layout_marginTop="19dp"
-        android:text="JOIN ROOM"
-        app:layout_constraintStart_toEndOf="@+id/edt_room"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_nickname" />
 
     <Button
         android:id="@+id/btn_scanQR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="40dp"
         android:text="Scan QR Code"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edt_room" />
+
+    <Button
+        android:id="@+id/btn_joinRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="40dp"
+        android:text="JOIN ROOM"
+        app:layout_constraintStart_toEndOf="@+id/txt_nickname"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txt_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="Nickname"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

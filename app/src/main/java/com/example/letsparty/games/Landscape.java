@@ -26,15 +26,12 @@ public class Landscape extends Game
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         TextView text = (TextView) findViewById(R.id.txt);
-        System.out.println(("*******************CONFIG HAS CHANGED*****************"));
 
         // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            System.out.println(("*******************LANDSCAPE*****************"));
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
             text.setText("Success!");
-            gameFinished();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            System.out.println(("*******************PORTRAIT*****************"));
+            gameFinished(true);
         }
     }
 

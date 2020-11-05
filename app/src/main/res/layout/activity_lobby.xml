@@ -38,7 +38,7 @@
             app:srcCompat="@drawable/icons8_settings" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/startButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="48dp"
@@ -46,6 +46,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+        <!--<Button
+            android:id="@+id/readyButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
+            android:text="@string/lobby_start"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />-->
 
         <EditText
             android:id="@+id/editTextTextPersonName"

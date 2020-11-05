@@ -40,6 +40,7 @@ public class ClearDanger extends Game
         else
         {
             System.out.println("FAILED!");
+            gameFinished(false);
             /*builder = new AlertDialog.Builder(this);
             builder.setMessage("You Lost!").setTitle("Success");
             AlertDialog dialog = builder.create();
@@ -49,7 +50,7 @@ public class ClearDanger extends Game
         if(dangerNum <= 0)
         {
             System.out.println("SUCCESS!");
-            gameFinished();
+            gameFinished(true);
             //AlertDialog dialog = GameUtil.createDialog(this, "Success!", "Click next when you're ready");
             //dialog.show();
 

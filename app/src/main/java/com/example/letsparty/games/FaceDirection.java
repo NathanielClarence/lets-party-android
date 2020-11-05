@@ -100,7 +100,7 @@ public class FaceDirection extends Game {
                     //add points to this user
                     //move to next game/end
                     System.out.println("Success");
-                    gameFinished();
+                    gameFinished(true);
                 }
             }
 
