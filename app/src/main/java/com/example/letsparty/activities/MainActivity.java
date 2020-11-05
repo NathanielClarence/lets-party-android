@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -31,11 +34,12 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
     private String playerId;
 
+    private ImageView title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.playerId = PlayerUtil.getPlayerId();
-
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -61,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
         binding.menuHost.setOnClickListener(view -> this.onHostClicked());
         binding.menuJoin.setOnClickListener(view -> this.onJoinClicked());
+
+        title = (ImageView) this.findViewById(R.id.gameTitle);
+        titleAnimate(title);
 
     }
 
@@ -133,5 +140,11 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
     @Override
     public void onNameDialogNegativeClick(DialogFragment dialog) {
 
+    }
+
+    private void titleAnimate(ImageView title) {
+        Animation animUpDown;
+        animUpDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.title_float);
+        title.startAnimation(animUpDown);
     }
 }
