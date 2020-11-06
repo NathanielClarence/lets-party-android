@@ -37,7 +37,7 @@ public abstract class Game extends AppCompatActivity {
     private long startTime;
     private long endTime;
     private Timer timer;
-    private long delay = 10000;
+    private long delay = 15000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

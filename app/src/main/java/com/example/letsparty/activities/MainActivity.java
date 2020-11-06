@@ -3,6 +3,7 @@ package com.example.letsparty.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import com.example.letsparty.PlayerUtil;
 import com.example.letsparty.R;
@@ -20,6 +23,10 @@ import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener{
@@ -62,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
         binding.menuHost.setOnClickListener(view -> this.onHostClicked());
         binding.menuJoin.setOnClickListener(view -> this.onJoinClicked());
 
+        if (this.checkPermission()){
+            requestPermission();
+        }
     }
 
     private void onHostClicked(){
@@ -111,6 +121,22 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
                     errorToast.show();
                 }
             });
+    }
+
+    public void requestPermission(){
+        System.out.println("inside requestPermission()");
+        ActivityCompat.requestPermissions(MainActivity.this, new
+                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO, READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    public boolean checkPermission()
+    {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
+        int result2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED &&
+                result1 == PackageManager.PERMISSION_GRANTED
+                && result2 == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
