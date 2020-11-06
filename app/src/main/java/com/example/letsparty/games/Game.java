@@ -37,6 +37,7 @@ public abstract class Game extends AppCompatActivity {
     private long startTime;
     private long endTime;
     private Timer timer;
+    private long delay = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,7 +53,7 @@ public abstract class Game extends AppCompatActivity {
                 gameFinished(false);
             }
 
-        }, 10000);
+        }, this.getDelay());
     }
 
     protected void gameFinished(boolean success)
@@ -79,5 +80,9 @@ public abstract class Game extends AppCompatActivity {
                 return id;
         }
         return null;
+    }
+
+    public long getDelay(){
+        return this.delay;
     }
 }

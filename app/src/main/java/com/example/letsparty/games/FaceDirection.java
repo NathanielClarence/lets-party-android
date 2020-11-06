@@ -80,7 +80,7 @@ public class FaceDirection extends Game {
         }
 
         txt_instruction.setText("Face "+directionToWin+"!");
-        //directionToWin = "NORTH";
+//        directionToWin = "NORTH";
          sensorEventListenerAccelrometer = new SensorEventListener() {
              private int run = 0;
              private float prevRotation;
@@ -108,9 +108,9 @@ public class FaceDirection extends Game {
                     direction = "NOT A CARDINAL DIRECTION";
                 }
 
-                Log.e("TEST DIR", "direction: "+direction);
+//                Log.e("TEST DIR", "direction: "+direction);
                 txt_direction.setText("Facing "+direction);
-                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
+//                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
 
                 if (run != 0){
                     if (direction.equals(directionToWin)){
@@ -121,8 +121,9 @@ public class FaceDirection extends Game {
                         directionFinish();
                         gameFinished(true);
                     }
-                }else if (run == 0){
+                }else {
                     prevRotation = rotationDeg;
+//                    Log.e("ROT", String.valueOf(rotationDeg));
                 }
 
                 if (prevRotation != rotationDeg){
@@ -160,7 +161,7 @@ public class FaceDirection extends Game {
                 }
 
 //                Log.e("TEST DIR", "direction: "+direction);
-//                txt_direction.setText("Facing "+direction);
+                txt_direction.setText("Facing "+direction);
 //                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
             }
 
@@ -181,7 +182,7 @@ public class FaceDirection extends Game {
                 directionFinish();
             }
 
-        }, 10000);
+        }, super.getDelay());
     }
 
     public void directionFinish(){
