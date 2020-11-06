@@ -56,7 +56,9 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login" />
+        <activity android:name=".Login" >
+        </activity>
+
         <activity android:name=".activities.Results" />
         <activity android:name=".activities.Lobby" />
         <activity android:name=".activities.GameRunner" />
