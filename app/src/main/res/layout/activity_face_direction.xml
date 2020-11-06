@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".games.FaceDirection">
 
-    <Button
+    <!--Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:onClick="ResetButton"
         android:text="RESET"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" /-->
 
     <ImageView
         android:id="@+id/imageView"
