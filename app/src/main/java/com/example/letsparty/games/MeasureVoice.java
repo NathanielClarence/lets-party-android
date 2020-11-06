@@ -8,6 +8,8 @@ import android.widget.EditText;
 import com.example.letsparty.R;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
@@ -20,31 +22,42 @@ public class MeasureVoice extends Game {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measure_voice);
-    }
+        listen();
 
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        Thread t1 = new Thread(new Runnable()
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask()
         {
-            @Override
+
             public void run()
             {
-                listen();
-                try
-                {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
                 end();
             }
-        });
-        t1.start();
+
+        }, super.getDelay());
     }
 
+//    @Override
+//    protected void onResume()
+//    {
+//        super.onResume();
+//        Thread t1 = new Thread(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                listen();
+//                try
+//                {
+//                    TimeUnit.SECONDS.sleep(5);
+//                } catch (InterruptedException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//                end();
+//            }
+//        });
+//        t1.start();
+//    }
 
     public void listen()
     {
@@ -76,5 +89,4 @@ public class MeasureVoice extends Game {
         System.out.println("recorded");
         gameFinished(true);
     }
-
 }
