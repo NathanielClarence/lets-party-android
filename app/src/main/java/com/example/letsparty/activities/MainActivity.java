@@ -43,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
         super.onCreate(savedInstanceState);
         this.playerId = PlayerUtil.getPlayerId();
 
+        if (!this.checkPermission()){
+            requestPermission();
+            Log.e("PRM", "granted");
+        }
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -68,10 +72,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
         binding.menuHost.setOnClickListener(view -> this.onHostClicked());
         binding.menuJoin.setOnClickListener(view -> this.onJoinClicked());
-
-        if (this.checkPermission()){
-            requestPermission();
-        }
     }
 
     private void onHostClicked(){

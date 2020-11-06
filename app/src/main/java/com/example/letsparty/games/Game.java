@@ -28,7 +28,7 @@ public abstract class Game extends AppCompatActivity {
             Stream.of(
                     new SimpleEntry<>("ClearDanger", ClearDanger.class),
                     new SimpleEntry<>("Landscape", Landscape.class),
-                    //new SimpleEntry<>("MeasureVoice", MeasureVoice.class),
+                    new SimpleEntry<>("MeasureVoice", MeasureVoice.class),
                     new SimpleEntry<>("ShakePhone", ShakePhone.class),
                     new SimpleEntry<>("FaceDirection", FaceDirection.class),
                     new SimpleEntry<>("WordColorV1", WordColorV1.class)
