@@ -83,6 +83,7 @@ public class FaceDirection extends Game {
         //directionToWin = "NORTH";
          sensorEventListenerAccelrometer = new SensorEventListener() {
              private int run = 0;
+             private float prevRotation;
 
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -111,7 +112,7 @@ public class FaceDirection extends Game {
                 txt_direction.setText("Facing "+direction);
                 Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
 
-                if (run >= 10){
+                if (run != 0){
                     if (direction.equals(directionToWin)){
                         //add points to this user
                         //move to next game/end
@@ -120,7 +121,11 @@ public class FaceDirection extends Game {
                         directionFinish();
                         gameFinished(true);
                     }
-                }else{
+                }else if (run == 0){
+                    prevRotation = rotationDeg;
+                }
+
+                if (prevRotation != rotationDeg){
                     run++;
                 }
             }
