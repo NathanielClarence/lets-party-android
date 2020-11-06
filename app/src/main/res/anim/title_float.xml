@@ -3,11 +3,8 @@
     android:interpolator="@android:anim/accelerate_decelerate_interpolator"
     >
 
-
-    <!-- Move -->
-
     <translate
-        android:duration="800"
+        android:duration="500"
         android:fillAfter="true"
         android:fromYDelta="0%p"
         android:toYDelta="-3%p"
