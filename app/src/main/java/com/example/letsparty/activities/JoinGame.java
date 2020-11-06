@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.letsparty.R;
@@ -27,6 +30,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
     private String uname;
     private ZXingScannerView mScannerView;
     private AlertDialog.Builder dialog;
+    private ImageView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -69,6 +73,9 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
 
         // QRCode scan settings
         mScannerView = new ZXingScannerView(this);
+
+        title = (ImageView) this.findViewById(R.id.gameTitle);
+        titleAnimate(title);
     }
 
     private void joinRoom(String room, String playerName){
@@ -137,5 +144,11 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
             mScannerView.resumeCameraPreview(this);
             Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void titleAnimate(ImageView title) {
+        Animation animUpDown;
+        animUpDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.title_float);
+        title.startAnimation(animUpDown);
     }
 }

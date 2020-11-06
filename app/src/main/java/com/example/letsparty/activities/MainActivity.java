@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
     }
 
-    private void titleAnimate(ImageView title) {
+    public void titleAnimate(ImageView title) {
         Animation animUpDown;
         animUpDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.title_float);
         title.startAnimation(animUpDown);
