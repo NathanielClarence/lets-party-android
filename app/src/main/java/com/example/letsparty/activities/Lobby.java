@@ -1,5 +1,6 @@
 package com.example.letsparty.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -230,5 +231,20 @@ public class Lobby extends AppCompatActivity {
         }catch (WriterException e) {
             Log.v("QR ERROR: ", e.toString());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String quitMessage = this.player.equals(this.room.getHost()) ?
+                "Cancel the match?" :
+                "Quit the room?";
+        builder.setMessage(quitMessage)
+                .setPositiveButton("Quit", (dialog, i) -> this.quitRoom())
+                .setNegativeButton("Cancel", (dialog, i) -> dialog.dismiss());
+    }
+
+    private void quitRoom(){
+        Toast.makeText(this, "quit", Toast.LENGTH_SHORT);
     }
 }
