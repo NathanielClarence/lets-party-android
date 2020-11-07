@@ -65,8 +65,8 @@ public class StubServerConnector implements ServerConnector {
     }
 
     @Override
-    public void quitRoom(String roomCode, String playerId) {
-
+    public Task<Boolean> quitRoom(String roomCode, Player player) {
+        return null;
     }
 
     @Override
