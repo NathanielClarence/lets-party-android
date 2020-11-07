@@ -27,14 +27,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import com.google.zxing.WriterException;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -75,7 +71,11 @@ public class Lobby extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+<<<<<<< HEAD
         if (!room.getHost().equals(this.player)) {
+=======
+        if (!room.getHost().getId().equals(this.playerId)) {
+>>>>>>> 56b68ed... Remove ready button
             readyForMatch();
         }
     }
@@ -112,6 +112,7 @@ public class Lobby extends AppCompatActivity {
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
                 //check message that all players are ready
@@ -127,8 +128,13 @@ public class Lobby extends AppCompatActivity {
         Log.d("broadcast", "start match registered");
 
         //the following code is a stub for testing purposes
+<<<<<<< HEAD
         //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
         //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
+=======
+        List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
+        new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
+>>>>>>> 56b68ed... Remove ready button
 
         return tcs.getTask();
     }
