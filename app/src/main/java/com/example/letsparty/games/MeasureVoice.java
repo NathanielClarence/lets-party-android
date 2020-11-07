@@ -36,29 +36,6 @@ public class MeasureVoice extends Game {
         }, super.getDelay());
     }
 
-//    @Override
-//    protected void onResume()
-//    {
-//        super.onResume();
-//        Thread t1 = new Thread(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                listen();
-//                try
-//                {
-//                    TimeUnit.SECONDS.sleep(5);
-//                } catch (InterruptedException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                end();
-//            }
-//        });
-//        t1.start();
-//    }
-
     public void listen()
     {
         recorder = new MediaRecorder();
