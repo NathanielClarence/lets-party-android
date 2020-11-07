@@ -71,11 +71,7 @@ public class Lobby extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-<<<<<<< HEAD
         if (!room.getHost().equals(this.player)) {
-=======
-        if (!room.getHost().getId().equals(this.playerId)) {
->>>>>>> 56b68ed... Remove ready button
             readyForMatch();
         }
     }
@@ -128,13 +124,8 @@ public class Lobby extends AppCompatActivity {
         Log.d("broadcast", "start match registered");
 
         //the following code is a stub for testing purposes
-<<<<<<< HEAD
         //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
-=======
-        List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
->>>>>>> 56b68ed... Remove ready button
+        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000)
 
         return tcs.getTask();
     }
