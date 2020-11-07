@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -43,6 +44,7 @@ public class Lobby extends AppCompatActivity {
     private Bitmap bitmap;
     private ImageView qrImage;
     private ActivityLobbyBinding binding;
+    private TaskCompletionSource<List<String>> startMatchTcs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +81,12 @@ public class Lobby extends AppCompatActivity {
     private void startMatch() {
         ServerConnector sc = ServerUtil.getServerConnector(this);
         //tell server the match has started and obtain list of games from server
-        sc.startMatch(room.getRoomCode());
         readyForMatch();
+        sc.startMatch(room.getRoomCode(), player)
+            .addOnFailureListener(exception -> {
+                if (startMatchTcs != null)
+                    startMatchTcs.trySetException(exception);
+            });
     }
 
     //receive data from server
@@ -121,12 +127,12 @@ public class Lobby extends AppCompatActivity {
                 //check message that all players are ready
                 List<String> gameIds = intent.getStringArrayListExtra("gameIds");
                 Log.d("broadcast", "start match received");
-                tcs.setResult(gameIds);
+                startMatchTcs.trySetResult(gameIds);
 
                 lbm.unregisterReceiver(this);
             }
         };
-        IntentFilter filter = new IntentFilter("players_ready");
+        IntentFilter filter = new IntentFilter("start_match");
         lbm.registerReceiver(br, filter);
         Log.d("broadcast", "start match registered");
 

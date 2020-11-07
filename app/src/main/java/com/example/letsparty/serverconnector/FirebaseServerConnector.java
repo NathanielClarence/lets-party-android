@@ -84,8 +84,24 @@ public class FirebaseServerConnector implements ServerConnector{
     }
 
     @Override
-    public Task<List<String>> startMatch(String roomCode) {
-        return null;
+    public Task<Boolean> startMatch(String roomCode, Player player) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", roomCode);
+        data.put("playerName", player.getNickname());
+        data.put("token", player.getToken());
+
+        return mFunctions.getHttpsCallable("startGame")
+                .call(data)
+                //check for exceptions
+                .continueWith(task -> {
+                    String result = (String) task.getResult().getData();
+                    switch(result){
+                        case "ROOMNOTFOUND": throw new RoomNotFoundException(roomCode);
+                        case "BADNAME": throw new RuntimeException("Only the host can start the match");
+                        case "OK": return true;   //success is denoted by empty string
+                        default: throw new RuntimeException("Unknown message " + result);
+                    }
+                });
     }
 
     @Override

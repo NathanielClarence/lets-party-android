@@ -1,12 +1,18 @@
 package com.example.letsparty;
 
-import android.app.Service;
 import android.content.Intent;
-import android.os.IBinder;
 import android.util.Log;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class MyFirebaseMessageService extends FirebaseMessagingService {
     private static final String TAG = "Firebase" ;
@@ -58,5 +64,32 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+        String action = remoteMessage.getData().get("action");
+        switch(action){
+            case "START": sendStartBroadcast(remoteMessage.getData());
+            case "JOIN": break;
+            //case others: break;
+            default: break;
+        }
+    }
+
+    private void sendStartBroadcast(Map<String, String> data){
+        ArrayList<String> games = new ArrayList<>();
+
+        //convert games data from json into array list
+        try {
+            JSONArray jsonGames = new JSONArray(data.get("games"));
+            for (int i = 0; i < jsonGames.length(); i++){
+                games.add(jsonGames.optString(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //broadcast the list of games
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        Intent intent = new Intent("start_match");
+        intent.putStringArrayListExtra("gameIds", games);
+        lbm.sendBroadcast(intent);
     }
 }
