@@ -8,9 +8,9 @@ public final class ServerUtil {
     static ServerConnector serverConnector = null;
     public static ServerConnector getServerConnector(Context context){
         if (serverConnector == null){
-            FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
-            serverConnector = new FirebaseServerConnector(mFunctions);
-            //serverConnector = new StubServerConnector(context);
+            //FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
+            //serverConnector = new FirebaseServerConnector(mFunctions);
+            serverConnector = new StubServerConnector(context);
         }
         return serverConnector;
     }

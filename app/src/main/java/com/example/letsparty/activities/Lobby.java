@@ -165,18 +165,19 @@ public class Lobby extends AppCompatActivity {
         binding.startButton.setEnabled(false);
         //binding.readyButton.setEnabled(false);
         waitForMatchStart()
-                .addOnSuccessListener(gameIds -> {
-                    Intent intent = new Intent(this, GameRunner.class);
-                    intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
-                    intent.putExtra(MainActivity.ROOM, this.room);
-                    intent.putExtra(MainActivity.PLAYER, this.player);
-                    startActivity(intent);
-                })
-                .addOnFailureListener(ex -> {
-                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    binding.startButton.setEnabled(true);
-                    //binding.readyButton.setEnabled(true);
-                });
+            .addOnSuccessListener(gameIds -> {
+                Intent intent = new Intent(this, GameRunner.class);
+                intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
+                intent.putExtra(MainActivity.ROOM, this.room);
+                intent.putExtra(MainActivity.PLAYER, this.player);
+                startActivity(intent);
+                this.finish();
+            })
+            .addOnFailureListener(ex -> {
+                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                binding.startButton.setEnabled(true);
+                //binding.readyButton.setEnabled(true);
+            });
     }
     private Task<List<String>> waitForMatchStart() {
         TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
@@ -241,10 +242,14 @@ public class Lobby extends AppCompatActivity {
                 "Quit the room?";
         builder.setMessage(quitMessage)
                 .setPositiveButton("Quit", (dialog, i) -> this.quitRoom())
-                .setNegativeButton("Cancel", (dialog, i) -> dialog.dismiss());
+                .setNegativeButton("Cancel", (dialog, i) -> dialog.dismiss())
+                .show();
     }
 
     private void quitRoom(){
-        Toast.makeText(this, "quit", Toast.LENGTH_SHORT);
+        ServerConnector sc = ServerUtil.getServerConnector(this);
+        sc.quitRoom(this.room.getRoomCode(), this.player)
+            .addOnSuccessListener(res -> this.finish())
+            .addOnFailureListener(ex -> Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

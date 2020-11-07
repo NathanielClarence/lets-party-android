@@ -17,8 +17,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,7 +29,7 @@ import java.util.Set;
  */
 public class StubServerConnector implements ServerConnector {
 
-    Set<Room> rooms = new HashSet<>();
+    Map<String, Room> rooms = new HashMap<>();
     private Context context;
 
     StubServerConnector(){
@@ -42,7 +44,7 @@ public class StubServerConnector implements ServerConnector {
     public Task<Room> createRoom(Player host) {
 
         Room room = new Room("7ES7", host);
-        rooms.add(room);
+        rooms.put(room.getRoomCode(), room);
         return Tasks.forResult(room);
 
     }
@@ -57,7 +59,7 @@ public class StubServerConnector implements ServerConnector {
         //create a new room with a fake host
         Player host = new Player("TEST HOST", "Host", "12345");
         Room room = new Room("701N", host);
-        rooms.add(room);
+        rooms.put(room.getRoomCode(), room);
 
         //add the player
         room.addPlayer(player);
@@ -66,7 +68,16 @@ public class StubServerConnector implements ServerConnector {
 
     @Override
     public Task<Boolean> quitRoom(String roomCode, Player player) {
-        return null;
+        if (!rooms.containsKey(roomCode))
+            return Tasks.forException(new RoomNotFoundException(roomCode));
+
+        Room room = rooms.get(roomCode);
+        if (player.equals(room.getHost())){
+            rooms.remove(roomCode);
+        } else {
+            room.removePlayer(player);
+        }
+        return Tasks.forResult(true);
     }
 
     @Override
