@@ -26,6 +26,7 @@ import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityLobbyBinding;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
+import com.example.letsparty.exceptions.RoomCancelledException;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.android.gms.tasks.Task;
@@ -174,9 +175,14 @@ public class Lobby extends AppCompatActivity {
                 this.finish();
             })
             .addOnFailureListener(ex -> {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                binding.startButton.setEnabled(true);
-                //binding.readyButton.setEnabled(true);
+                if (ex instanceof  RoomCancelledException){
+                    Toast.makeText(this, "Room has been cancelled by the host", Toast.LENGTH_SHORT).show();
+                    this.finish();
+                } else {
+                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    binding.startButton.setEnabled(true);
+                    //binding.readyButton.setEnabled(true);
+                }
             });
     }
     private Task<List<String>> waitForMatchStart() {
@@ -186,13 +192,17 @@ public class Lobby extends AppCompatActivity {
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
-
             @Override
             public void onReceive(Context context, Intent intent) {
-                //check message that all players are ready
-                List<String> gameIds = intent.getStringArrayListExtra("gameIds");
-                Log.d("broadcast", "start match received");
-                startMatchTcs.trySetResult(gameIds);
+                if (intent.getBooleanExtra("cancelled", false)){
+                    //if message is about how the room is cancelled, then set the task as failed
+                    startMatchTcs.trySetException(new RoomCancelledException());
+                } else {
+                    //if message is how the match should start, then set task as success, with the list of games to be played
+                    List<String> gameIds = intent.getStringArrayListExtra("gameIds");
+                    Log.d("broadcast", "start match received");
+                    startMatchTcs.trySetResult(gameIds);
+                }
 
                 lbm.unregisterReceiver(this);
             }

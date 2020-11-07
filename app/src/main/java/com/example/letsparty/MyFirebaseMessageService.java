@@ -90,6 +90,8 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                 System.out.println("*********ENDGAME********");
                 sendEndGameBroadcast(remoteMessage.getData().get("winner"));
                 break;
+            //case others: break;
+            case "ROOMEND": sendMatchCancelledBroadcast(); break;
             default: break;
         }
     }
@@ -125,6 +127,7 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         lbm.sendBroadcast(intent);
     }
 
+
     private void sendEndGameBroadcast(String winner)
     {
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
@@ -132,4 +135,13 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         intent.putExtra("winner", winner);
         lbm.sendBroadcast(intent);
     }
+
+    private void sendMatchCancelledBroadcast() {
+        //broadcast that the match is cancelled
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        Intent intent = new Intent("start_match");
+        intent.putExtra("cancelled", true);
+        lbm.sendBroadcast(intent);
+    }
+
 }
