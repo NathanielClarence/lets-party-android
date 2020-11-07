@@ -1,6 +1,7 @@
 package com.example.letsparty.games;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,43 +9,34 @@ import android.widget.EditText;
 import com.example.letsparty.R;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
 public class MeasureVoice extends Game {
 
-    MediaRecorder recorder = new MediaRecorder();
+    private MediaRecorder recorder = new MediaRecorder();
+    private static final String TAG = "MEASURE_VOICE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measure_voice);
-    }
+        listen();
 
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        Thread t1 = new Thread(new Runnable()
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask()
         {
-            @Override
+
             public void run()
             {
-                listen();
-                try
-                {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
                 end();
             }
-        });
-        t1.start();
-    }
 
+        }, 10000);
+    }
 
     public void listen()
     {
@@ -53,12 +45,12 @@ public class MeasureVoice extends Game {
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setOutputFile("/dev/null");
-
         try {
             recorder.prepare();
             recorder.start();
+            Log.e(TAG, "Recording user voice started");
             recorder.getMaxAmplitude();
-            System.out.println("Start Recording");
+
         }catch(IOException e){
             e.printStackTrace();
         }catch(SecurityException e){
@@ -69,12 +61,11 @@ public class MeasureVoice extends Game {
     public void end()
     {
         int maxAmp = recorder.getMaxAmplitude();
+        Log.e(TAG, "Amplitude is: " + maxAmp);
         recorder.stop();
-        System.out.println("**********AMP is: " + maxAmp);
         recorder.reset();
         recorder.release();
         System.out.println("recorded");
-        gameFinished();
+        gameFinished(true);
     }
-
 }

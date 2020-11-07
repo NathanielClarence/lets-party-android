@@ -15,17 +15,24 @@ import android.widget.TextView;
 import com.example.letsparty.R;
 import com.example.letsparty.games.Game;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FaceDirection extends Game {
 
     private ImageView imageView;
     private TextView txt_direction;
+    private TextView txt_instruction;
+
     private String direction;
     private float rotationDeg;
+    private String directionToWin;
 
-    private SensorManager sensorManager;
+    public SensorManager sensorManager;
     private Sensor sensorAccelerometer;
     private Sensor sensorMagneticField;
+    private SensorEventListener sensorEventListenerAccelrometer;
+    private SensorEventListener sensorEventListenerMagneticField;
 
     private float[] floatGravity = new float[3];
     private float[] floatGeoMagnetic = new float[3];
@@ -33,13 +40,18 @@ public class FaceDirection extends Game {
     private float[] floatOrientation = new float[3];
     private float[] floatRotationMatrix = new float[9];
 
+    private long startTime;
+    private long endTime;
+    private Timer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_face_direction);
 
         imageView = findViewById(R.id.imageView);
         txt_direction = findViewById(R.id.textView);
+        txt_instruction = findViewById(R.id.txt_instruction);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -48,26 +60,31 @@ public class FaceDirection extends Game {
 
         Random random = new Random();
         int rand = random.nextInt(4);
-        String faceThis;
+        //String faceThis;
         switch (rand){
             case 0:
-                faceThis = "NORTH";
+                directionToWin = "NORTH";
                 break;
             case 1:
-                faceThis = "EAST";
+                directionToWin = "EAST";
                 break;
             case 2:
-                faceThis = "SOUTH";
+                directionToWin = "SOUTH";
                 break;
             case 3:
-                faceThis = "WEST";
+                directionToWin = "WEST";
                 break;
             default:
-                faceThis = "NORTH";
+                directionToWin = "NORTH";
                 break;
         }
 
-        SensorEventListener sensorEventListenerAccelrometer = new SensorEventListener() {
+        txt_instruction.setText("Face "+directionToWin+"!");
+//        directionToWin = "NORTH";
+         sensorEventListenerAccelrometer = new SensorEventListener() {
+             private int run = 0;
+             private float prevRotation;
+
             @Override
             public void onSensorChanged(SensorEvent event) {
                 floatGravity = event.values;
@@ -91,16 +108,26 @@ public class FaceDirection extends Game {
                     direction = "NOT A CARDINAL DIRECTION";
                 }
 
-                Log.e("TEST DIR", "direction: "+direction);
+//                Log.e("TEST DIR", "direction: "+direction);
                 txt_direction.setText("Facing "+direction);
-                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
+//                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
 
+                if (run != 0){
+                    if (direction.equals(directionToWin)){
+                        //add points to this user
+                        //move to next game/end
+                        System.out.println("Success");
+                        //sensorManager.unregisterListener(this);
+                        directionFinish();
+                        gameFinished(true);
+                    }
+                }else {
+                    prevRotation = rotationDeg;
+//                    Log.e("ROT", String.valueOf(rotationDeg));
+                }
 
-                if (direction.equals(faceThis)){
-                    //add points to this user
-                    //move to next game/end
-                    System.out.println("Success");
-                    gameFinished();
+                if (prevRotation != rotationDeg){
+                    run++;
                 }
             }
 
@@ -109,7 +136,7 @@ public class FaceDirection extends Game {
             }
         };
 
-        SensorEventListener sensorEventListenerMagneticField = new SensorEventListener() {
+        sensorEventListenerMagneticField = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 floatGeoMagnetic = event.values;
@@ -133,20 +160,37 @@ public class FaceDirection extends Game {
                     direction = "NOT A CARDINAL DIRECTION";
                 }
 
-                Log.e("TEST DIR", "direction: "+direction);
+//                Log.e("TEST DIR", "direction: "+direction);
                 txt_direction.setText("Facing "+direction);
-                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
+//                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
             }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
             }
         };
+
         sensorManager.registerListener(sensorEventListenerAccelrometer, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(sensorEventListenerMagneticField, sensorMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+
+        this.startTime = System.currentTimeMillis();
+        this.timer = new Timer();
+        this.timer.schedule(new TimerTask() {
+
+            public void run() {
+                Log.e(TAG, "Failed due to running out of time");
+                directionFinish();
+            }
+
+        }, super.getDelay());
     }
 
-    public void ResetButton(View view){
-        imageView.setRotation(180);
+    public void directionFinish(){
+        this.timer.cancel();
+        sensorManager.unregisterListener(sensorEventListenerAccelrometer);
+        sensorManager.unregisterListener(sensorEventListenerMagneticField);
     }
+//    public void ResetButton(View view){
+//        imageView.setRotation(180);
+//    }
 }

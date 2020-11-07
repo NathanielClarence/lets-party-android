@@ -39,7 +39,6 @@ public class WordColorV1 extends Game
         String randomColorName = colorNames.get(r.nextInt(colorNames.size()));
         word.setTextColor(randomColor);
         word.setText(randomColorName);
-
     }
 
     public void initialize()
@@ -67,9 +66,9 @@ public class WordColorV1 extends Game
 
         Integer btnColor = (Integer) v.getTag();
         if(btnColor == randomColor)
-            System.out.println("************SUCCESS!");
+            gameFinished(true);
         else
-            System.out.println("************FAILED!");
+            gameFinished(false);
 
     }
 }
