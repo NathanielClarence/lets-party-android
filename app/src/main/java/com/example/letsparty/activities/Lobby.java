@@ -11,14 +11,16 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.letsparty.MyFirebaseMessageService;
+import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityLobbyBinding;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
@@ -32,6 +34,8 @@ import com.google.zxing.WriterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -44,22 +48,38 @@ public class Lobby extends AppCompatActivity {
     private List<String> gameIds;
     private Bitmap bitmap;
     private ImageView qrImage;
+    private TextView txtPlayerList;
     private static ActivityLobbyBinding binding;
     private TaskCompletionSource<List<String>> startMatchTcs;
+    private ArrayList<String> listOfPlayers = new ArrayList<>();
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_lobby);
         binding = ActivityLobbyBinding.inflate(getLayoutInflater());
 
         Intent intent = getIntent();
-        this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
+        String userType = "else";
+        try{
+            userType = intent.getStringExtra("TYPE");
+        }catch (Exception e){
+        }
+
+        if (userType.equals("guest")){
+            this.player = new Player("null", intent.getStringExtra("playerName"),
+                    intent.getStringExtra(MainActivity.TOKEN));
+            this.room = new Room(intent.getStringExtra("roomCode"), this.player);
+        }else{
+            this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
+            this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
+        }
         String roomCode = room.getRoomCode();
 
         binding.textView.setText(roomCode);
         generateQRCode(roomCode);
 
-        this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
         boolean isHost = room.getHost().equals(this.player);
         binding.startButton.setVisibility(isHost ? View.VISIBLE : View.INVISIBLE);
         //binding.readyButton.setVisibility(isHost ? View.INVISIBLE : View.VISIBLE);
@@ -68,7 +88,20 @@ public class Lobby extends AppCompatActivity {
         binding.startButton.setOnClickListener(view -> startMatch());
         //binding.readyButton.setOnClickListener(view -> readyForMatch());
 
+        txtPlayerList = findViewById(R.id.textView2);
+
         setContentView(binding.getRoot());
+
+        //check player list every 1 second
+        MyFirebaseMessageService.addPlayerToList(this.player.getNickname());
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            public void run() {
+                updatePlayers();
+            }
+
+        }, 1000);
     }
 
     @Override
@@ -88,12 +121,19 @@ public class Lobby extends AppCompatActivity {
                 if (startMatchTcs != null)
                     startMatchTcs.trySetException(exception);
             });
+        timer.cancel();
     }
 
     //receive data from server
-    public static void updatePlayers(String[] p){
-        //turn string to
-        //room.addPlayer();
+    public void updatePlayers(){
+        ArrayList<String> p = MyFirebaseMessageService.getPlayerList();
+
+        //check if player is host
+        Player firstP = new Player("none", p.get(0), "none");
+        if (!room.getHost().equals(firstP)){
+            room.setHost(firstP);
+        }
+
         List<String> roomPlayers = new ArrayList<>();
         for (Player player1 : room.getPlayers()){
             roomPlayers.add(player1.getNickname());
@@ -107,9 +147,11 @@ public class Lobby extends AppCompatActivity {
 
         String playerList = "PLAYER LIST\n";
         for (Player player1 : room.getPlayers()){
-            playerList.concat(player1.getNickname()+"\n");
+            playerList = playerList + player1.getNickname()+"\n";
         }
-        binding.textView2.setText(playerList);
+        txtPlayerList.setText(playerList);
+
+        Log.e("LIST", playerList);
     }
 
     private void readyForMatch() {

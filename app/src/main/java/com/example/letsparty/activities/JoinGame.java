@@ -18,8 +18,11 @@ import android.widget.Toast;
 
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityJoinGameBinding;
+import com.example.letsparty.entities.Player;
+import com.example.letsparty.serverconnector.FirebaseServerConnector;
 import com.example.letsparty.serverconnector.ServerConnector;
 //import com.example.letsparty.serverconnector.ServerUtil;
+import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -27,6 +30,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class JoinGame extends AppCompatActivity implements ZXingScannerView.ResultHandler{
     private String roomCode;
     private String uname;
+    private String token;
     private ZXingScannerView mScannerView;
     private AlertDialog.Builder dialog;
 
@@ -54,8 +58,8 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         dialog.setNeutralButton("OK", null);
         //binding.txtNickname.addTextChangedListener(view -> this.setUserNickname(binding.txtNickname.getText().toString()));
 
+        Intent intent = getIntent();
         try{
-            Intent intent = getIntent();
             //set room codee
             roomCode = (String) intent.getStringExtra("SCANRESULT");
             binding.edtRoom.setText(roomCode);
@@ -67,15 +71,17 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         }finally{
             roomCode = "";
             uname = "";
+            token = (String) intent.getStringExtra(MainActivity.TOKEN);
+            Log.e("tkn", this.token);
         }
 
         // QRCode scan settings
         mScannerView = new ZXingScannerView(this);
     }
 
-    private void joinRoom(String room, String playerName){
+    private void joinRoom(String roomC, String playerName){
         try {
-            roomCode = room;
+            roomCode = roomC;
             uname = playerName;
             //Log.println(Log.INFO, "JOIN ROOM: ", "joining "+roomCode);
 
@@ -85,12 +91,32 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
                 throw new Exception("No Nickname/user detected");
             }
 
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("roomCode", roomCode);
-            returnIntent.putExtra("playerName", uname);
-            setResult(Activity.RESULT_OK, returnIntent);
+//            Intent returnIntent = new Intent();
+//            returnIntent.putExtra("roomCode", roomCode);
+//            returnIntent.putExtra("playerName", uname);
+//            setResult(Activity.RESULT_OK, returnIntent);
+            //add function to join room here
+            ServerConnector sc = ServerUtil.getServerConnector(this);
+            sc.joinRoom(roomCode, new Player(null, uname, token))
+                    .addOnSuccessListener(
+                            room -> {
+//                                Intent returnIntent = new Intent();
+//                                returnIntent.putExtra("roomCode", roomCode);
+//                                returnIntent.putExtra("playerName", uname);
+//                                returnIntent.putExtra(MainActivity.TOKEN, token);
+//                                setResult(Activity.RESULT_OK, returnIntent);
+                                Intent lobbyIntent = new Intent(this, Lobby.class);
+                                lobbyIntent.putExtra("roomCode", roomCode);
+                                lobbyIntent.putExtra("playerName", uname);
+                                lobbyIntent.putExtra(MainActivity.TOKEN, token);
+                                lobbyIntent.putExtra("TYPE", "guest");
+                                startActivity(lobbyIntent);
+                                //Log.d("JOINROOM", "joining...");
+                                this.finish();
+                            })
+                    .addOnFailureListener(exception -> Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_SHORT).show());
 
-            this.finish();
+            //this.finish();
         }catch (Exception e){
             Log.println(Log.INFO, "EXCEPTION", e.toString());
         }
@@ -132,6 +158,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
             Intent joinIntent = new Intent(this, JoinGame.class);
             joinIntent.putExtra("SCANRESULT", roomCode.substring(11));
             joinIntent.putExtra("USERNICK", uname);
+            joinIntent.putExtra(MainActivity.TOKEN, token);
             startActivity(joinIntent);
             this.finish();
         }else {

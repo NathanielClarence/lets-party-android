@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.letsparty.activities.Lobby;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -13,11 +12,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class MyFirebaseMessageService extends FirebaseMessagingService {
     private static final String TAG = "Firebase" ;
+    public static ArrayList<String> playerList = new ArrayList<>();
 
     public MyFirebaseMessageService() {
     }
@@ -71,16 +70,30 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
             case "START": sendStartBroadcast(remoteMessage.getData());
             case "JOIN": break;
             case "LISTUPDATE":
-                //String playerList = (String) remoteMessage.getData().get("users")
-                String playerList = remoteMessage.getData().get("users");
-                String[] players = playerList.split(String.valueOf(','));
+                //Data received as string
+                String pList = (String) remoteMessage.getData().get("users");
+                //parse string to arraylist
+                String[] players = pList.split(String.valueOf(','));
 
-                Log.d("LISTUPDATE", playerList);
-                Lobby.updatePlayers(players);
+                Log.d("LISTUPDATE", pList);
+                //update list of players in lobby
+//                Lobby.updatePlayers(players);
+                playerList.clear();
+                for (String e: players){
+                    playerList.add(e.replaceAll("[^a-zA-Z0-9]", ""));
+                }
                 break;
             //case others: break;
             default: break;
         }
+    }
+
+    public static void addPlayerToList(String n){
+        playerList.add(n);
+    }
+
+    public static ArrayList<String> getPlayerList(){
+        return playerList;
     }
 
     private void sendStartBroadcast(Map<String, String> data){
