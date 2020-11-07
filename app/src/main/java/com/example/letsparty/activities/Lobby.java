@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -38,12 +39,12 @@ import androidmads.library.qrgenearator.QRGEncoder;
 
 public class Lobby extends AppCompatActivity {
 
-    private Room room;
+    private static Room room;
     private Player player;
     private List<String> gameIds;
     private Bitmap bitmap;
     private ImageView qrImage;
-    private ActivityLobbyBinding binding;
+    private static ActivityLobbyBinding binding;
     private TaskCompletionSource<List<String>> startMatchTcs;
 
     @Override
@@ -90,10 +91,22 @@ public class Lobby extends AppCompatActivity {
     }
 
     //receive data from server
-    private void updatePlayers(Player p){
-        this.room.addPlayer(p);
+    public static void updatePlayers(String[] p){
+        //turn string to
+        //room.addPlayer();
+        List<String> roomPlayers = new ArrayList<>();
+        for (Player player1 : room.getPlayers()){
+            roomPlayers.add(player1.getNickname());
+        }
+
+        for (String p1 : p){
+            if(!Arrays.asList(roomPlayers).contains(p1)){
+                room.addPlayer(new Player(null, p1, null));
+            }
+        }
+
         String playerList = "PLAYER LIST\n";
-        for (Player player1 : this.room.getPlayers()){
+        for (Player player1 : room.getPlayers()){
             playerList.concat(player1.getNickname()+"\n");
         }
         binding.textView2.setText(playerList);

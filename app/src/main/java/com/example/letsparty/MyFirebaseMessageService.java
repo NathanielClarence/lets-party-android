@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.letsparty.activities.Lobby;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MyFirebaseMessageService extends FirebaseMessagingService {
@@ -68,6 +70,14 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         switch(action){
             case "START": sendStartBroadcast(remoteMessage.getData());
             case "JOIN": break;
+            case "LISTUPDATE":
+                //String playerList = (String) remoteMessage.getData().get("users")
+                String playerList = remoteMessage.getData().get("users");
+                String[] players = playerList.split(String.valueOf(','));
+
+                Log.d("LISTUPDATE", playerList);
+                Lobby.updatePlayers(players);
+                break;
             //case others: break;
             default: break;
         }

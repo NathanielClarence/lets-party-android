@@ -11,6 +11,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -131,6 +133,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
             joinIntent.putExtra("SCANRESULT", roomCode.substring(11));
             joinIntent.putExtra("USERNICK", uname);
             startActivity(joinIntent);
+            this.finish();
         }else {
             //invalid qrcode result
             Log.println(Log.INFO, "QRCODE:", "Invalid");
