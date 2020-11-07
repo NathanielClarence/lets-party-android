@@ -1,10 +1,15 @@
 package com.example.letsparty.entities;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Room implements Serializable {
     private String roomCode;
@@ -58,5 +63,28 @@ public class Room implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(roomCode, host, players);
+    }
+
+    public static Room processRoomString(String roomJSONString, String roomCode, Player player) throws JSONException {
+        //process the json from server
+        JSONObject jsonRoom = new JSONObject(roomJSONString);
+        JSONArray jsonUsers = jsonRoom.getJSONArray("users");
+        String hostname = jsonRoom.optString("host");
+        List<String> usernames = IntStream.range(0, jsonUsers.length())
+                .mapToObj(jsonUsers::optString)
+                .collect(Collectors.toList());
+
+        //create the host and the new room
+        //just using dummy ids and tokens is fine because they're not used for anything
+        Player host = new Player("host", hostname, "dummy_token");
+        Room room = new Room(roomCode, host);
+        //add all the other players
+        usernames.stream().filter(name -> !name.equals(hostname))
+                .map(name -> new Player("dummy_id", name, "dummy_token"))
+                .forEach(room::addPlayer);
+        //add the player
+        room.addPlayer(player);
+
+        return room;
     }
 }
