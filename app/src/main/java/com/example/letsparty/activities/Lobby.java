@@ -62,12 +62,10 @@ public class Lobby extends AppCompatActivity {
 
         Intent intent = getIntent();
         String userType = "else";
-        try{
-            userType = intent.getStringExtra("TYPE");
-        }catch (Exception e){
-        }
+        userType = intent.getStringExtra("TYPE");
 
         if (userType.equals("guest")){
+            //temporarily set this player as host
             this.player = new Player("null", intent.getStringExtra("playerName"),
                     intent.getStringExtra(MainActivity.TOKEN));
             this.room = new Room(intent.getStringExtra("roomCode"), this.player);
@@ -95,13 +93,13 @@ public class Lobby extends AppCompatActivity {
         //check player list every 1 second
         MyFirebaseMessageService.addPlayerToList(this.player.getNickname());
         timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
 
             public void run() {
                 updatePlayers();
             }
 
-        }, 1000);
+        },1000, 1000);
     }
 
     @Override
@@ -130,17 +128,18 @@ public class Lobby extends AppCompatActivity {
 
         //check if player is host
         Player firstP = new Player("none", p.get(0), "none");
+        //if current player is not host, change host in room
         if (!room.getHost().equals(firstP)){
             room.setHost(firstP);
         }
 
-        List<String> roomPlayers = new ArrayList<>();
+        ArrayList<String> roomPlayers = new ArrayList<>();
         for (Player player1 : room.getPlayers()){
             roomPlayers.add(player1.getNickname());
         }
-
+        Log.e("FSF", String.valueOf(roomPlayers.contains("1202")));
         for (String p1 : p){
-            if(!Arrays.asList(roomPlayers).contains(p1)){
+            if(!roomPlayers.contains(p1)){
                 room.addPlayer(new Player(null, p1, null));
             }
         }
@@ -149,7 +148,8 @@ public class Lobby extends AppCompatActivity {
         for (Player player1 : room.getPlayers()){
             playerList = playerList + player1.getNickname()+"\n";
         }
-        txtPlayerList.setText(playerList);
+        //set player list
+        //txtPlayerList.setText(playerList);
 
         Log.e("LIST", playerList);
     }

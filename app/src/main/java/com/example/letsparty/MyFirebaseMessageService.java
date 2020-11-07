@@ -89,7 +89,10 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
     }
 
     public static void addPlayerToList(String n){
-        playerList.add(n);
+        if (!playerList.contains(n)) {
+            playerList.add(n);
+            Log.e("SS", playerList.toString());
+        }
     }
 
     public static ArrayList<String> getPlayerList(){
