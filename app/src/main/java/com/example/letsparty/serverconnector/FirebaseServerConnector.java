@@ -75,7 +75,23 @@ public class FirebaseServerConnector implements ServerConnector{
 
     @Override
     public Task<Boolean> quitRoom(String roomCode, Player player) {
-        return null;
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", roomCode);
+        data.put("playerName", player.getNickname());
+        data.put("token", player.getToken());
+
+        return mFunctions.getHttpsCallable("leaveGame")
+                .call(data)
+                //check for exceptions
+                .continueWith(task -> {
+                    String result = (String) task.getResult().getData();
+                    switch(result){
+                        case "ROOMNOTFOUND": throw new RoomNotFoundException(roomCode);
+                        case "BADNAME": throw new RuntimeException("Player is not in room " + roomCode);
+                        case "OK": return true;
+                        default: throw new RuntimeException("Unknown response " + result);
+                    }
+                });
     }
 
     @Override
