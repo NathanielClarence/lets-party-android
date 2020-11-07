@@ -50,7 +50,6 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         dialog = new AlertDialog.Builder(this);
         dialog.setMessage("Nickname and Room Code cannot be empty.");
         dialog.setNeutralButton("OK", null);
-        //binding.txtNickname.addTextChangedListener(view -> this.setUserNickname(binding.txtNickname.getText().toString()));
 
         try{
             Intent intent = getIntent();
@@ -75,7 +74,6 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         try {
             roomCode = room;
             uname = playerName;
-            //Log.println(Log.INFO, "JOIN ROOM: ", "joining "+roomCode);
 
             if (roomCode.equals("") || uname.equals("")) {
                 AlertDialog aDialog = dialog.create();
@@ -118,22 +116,19 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
     @Override
     public void handleResult(Result rawResult) {
         // Do something with the result here
-        // Prints scan results
-        Log.println(Log.INFO, "RESULT", rawResult.getText());
-        // Prints the scan format (qrcode, pdf417 etc.)
-        //Logger.verbose("result", rawResult.getBarcodeFormat().toString());
-        //If you would like to resume scanning, call this method below:
         roomCode = rawResult.getText();
-        Log.println(Log.INFO, "NN", roomCode.substring(0,11));
-        if (roomCode.substring(0,11).equals("letsparty::")){
+
+        //check QRCode validity
+        if (roomCode.substring(0,11).equals("letsparty::")) {
             //send scan result to this class if qrcode is valid
             Intent joinIntent = new Intent(this, JoinGame.class);
             joinIntent.putExtra("SCANRESULT", roomCode.substring(11));
             joinIntent.putExtra("USERNICK", uname);
             startActivity(joinIntent);
-        }else {
-            //invalid qrcode result
-            Log.println(Log.INFO, "QRCODE:", "Invalid");
+            //clear this activity when moving
+            this.finish();
+        } else {
+            //rescan if code invalid
             mScannerView.resumeCameraPreview(this);
             Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show();
         }
