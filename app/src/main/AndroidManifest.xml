@@ -27,10 +27,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".games.WordColorV1">
-<<<<<<< HEAD
-=======
 
->>>>>>> master
         </activity>
 
         <activity
@@ -53,20 +50,10 @@
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-<<<<<<< HEAD
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-=======
-                <category android:name="android.intent.category.LAUNCHER" />
->>>>>>> master
-            </intent-filter>
         </activity>
-        <activity android:name=".Login" >
-        </activity>
-
+        <activity android:name=".Login" />
         <activity android:name=".activities.Results" />
         <activity android:name=".activities.Lobby" />
         <activity android:name=".activities.GameRunner" />

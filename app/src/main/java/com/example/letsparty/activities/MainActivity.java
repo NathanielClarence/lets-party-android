@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
     public static final String PLAYER = "playerId";
 
     private String playerId;
-
     private ImageView title;
 
     @Override
@@ -48,14 +47,11 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
         super.onCreate(savedInstanceState);
         this.playerId = PlayerUtil.getPlayerId();
 
-<<<<<<< HEAD
-=======
         if (!this.checkPermission()){
             requestPermission();
             Log.e("PRM", "granted");
         }
 
->>>>>>> master
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -80,13 +76,9 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
         binding.menuHost.setOnClickListener(view -> this.onHostClicked());
         binding.menuJoin.setOnClickListener(view -> this.onJoinClicked());
-<<<<<<< HEAD
 
         title = (ImageView) this.findViewById(R.id.gameTitle);
         titleAnimate(title);
-
-=======
->>>>>>> master
     }
 
     private void onHostClicked(){
