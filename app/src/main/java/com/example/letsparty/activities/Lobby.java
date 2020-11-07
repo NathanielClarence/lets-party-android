@@ -83,28 +83,35 @@ public class Lobby extends AppCompatActivity {
         readyForMatch();
     }
 
+    //receive data from server
+    private void updatePlayers(Player p){
+        this.room.addPlayer(p);
+        String playerList = "PLAYER LIST\n";
+        for (Player player1 : this.room.getPlayers()){
+            playerList.concat(player1.getNickname()+"\n");
+        }
+        binding.textView2.setText(playerList);
+    }
+
     private void readyForMatch() {
         binding.startButton.setEnabled(false);
         //binding.readyButton.setEnabled(false);
         waitForMatchStart()
-            .addOnSuccessListener(gameIds -> {
-                Intent intent = new Intent(this, GameRunner.class);
-                intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
-                intent.putExtra(MainActivity.ROOM, this.room);
-                intent.putExtra(MainActivity.PLAYER, this.player);
-                startActivity(intent);
-            })
-            .addOnFailureListener(ex -> {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                binding.startButton.setEnabled(true);
-                //binding.readyButton.setEnabled(true);
-            });
+                .addOnSuccessListener(gameIds -> {
+                    Intent intent = new Intent(this, GameRunner.class);
+                    intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
+                    intent.putExtra(MainActivity.ROOM, this.room);
+                    intent.putExtra(MainActivity.PLAYER, this.player);
+                    startActivity(intent);
+                })
+                .addOnFailureListener(ex -> {
+                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    binding.startButton.setEnabled(true);
+                    //binding.readyButton.setEnabled(true);
+                });
     }
-
-
     private Task<List<String>> waitForMatchStart() {
         TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
-
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
@@ -125,8 +132,7 @@ public class Lobby extends AppCompatActivity {
 
         //the following code is a stub for testing purposes
         //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000)
-
+        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
         return tcs.getTask();
     }
 
