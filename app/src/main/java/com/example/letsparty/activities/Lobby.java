@@ -55,6 +55,7 @@ public class Lobby extends AppCompatActivity {
     private ActivityLobbyBinding binding;
     private TaskCompletionSource<List<String>> startMatchTcs;
     private Timer timer;
+    private BroadcastReceiver br;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +162,9 @@ public class Lobby extends AppCompatActivity {
                     Toast.makeText(this, "Room has been cancelled by the host", Toast.LENGTH_SHORT).show();
                     this.finish();
                 } else {
-                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (ex.getMessage()!= null && !ex.getMessage().isEmpty()) {
+                        Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                     binding.startButton.setEnabled(true);
                     //binding.readyButton.setEnabled(true);
                 }
@@ -173,7 +176,7 @@ public class Lobby extends AppCompatActivity {
 
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        BroadcastReceiver br = new BroadcastReceiver() {
+        br = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getBooleanExtra("cancelled", false)){
@@ -194,10 +197,14 @@ public class Lobby extends AppCompatActivity {
         Log.d("broadcast", "start match registered");
 
         //specify timeout after 1 minute
-        new Handler().postDelayed(
-                () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
-                60000
-        );
+        //only for host because they're the one who needs to start the game
+        //other players can wait indefinitely
+        if (player.equals(room.getHost())) {
+            new Handler().postDelayed(
+                    () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
+                    60000
+            );
+        }
         return startMatchTcs.getTask();
     }
 
@@ -239,5 +246,14 @@ public class Lobby extends AppCompatActivity {
         sc.quitRoom(this.room.getRoomCode(), this.player)
             .addOnSuccessListener(res -> this.finish())
             .addOnFailureListener(ex -> Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        timer.cancel();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+        startMatchTcs.trySetException(new RuntimeException());
     }
 }
