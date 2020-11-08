@@ -63,18 +63,8 @@ public class Lobby extends AppCompatActivity {
         binding = ActivityLobbyBinding.inflate(getLayoutInflater());
 
         Intent intent = getIntent();
-        String userType = "else";
-        userType = intent.getStringExtra("TYPE");
-
-        if (userType.equals("guest")){
-            //temporarily set this player as host
-            this.player = new Player("null", intent.getStringExtra("playerName"),
-                    intent.getStringExtra(MainActivity.TOKEN));
-            this.room = new Room(intent.getStringExtra("roomCode"), this.player);
-        }else{
-            this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
-            this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
-        }
+        this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
+        this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
         String roomCode = room.getRoomCode();
 
         binding.textView.setText(roomCode);
@@ -131,14 +121,6 @@ public class Lobby extends AppCompatActivity {
     //receive data from server
     public void updatePlayers(){
         ArrayList<String> p = MyFirebaseMessageService.getPlayerList();
-
-        //check if player is host
-        Player firstP = new Player("none", p.get(0), "none");
-        //if current player is not host, change host in room
-        if (!room.getHost().equals(firstP)){
-            Log.e("HOSTC", "HOST CHANGED");
-            room.setHost(firstP);
-        }
 
         ArrayList<String> roomPlayers = new ArrayList<>();
         for (Player player1 : room.getPlayers()){
@@ -211,11 +193,7 @@ public class Lobby extends AppCompatActivity {
         lbm.registerReceiver(br, filter);
         Log.d("broadcast", "start match registered");
 
-        //the following code is a stub for testing purposes
-        //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
-        //return tcs.getTask();
-        //specify timeout
+        //specify timeout after 1 minute
         new Handler().postDelayed(
                 () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
                 60000

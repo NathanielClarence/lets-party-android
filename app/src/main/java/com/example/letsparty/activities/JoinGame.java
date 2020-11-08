@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.letsparty.PlayerUtil;
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityJoinGameBinding;
 import com.example.letsparty.entities.Player;
@@ -104,7 +105,8 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
 //            setResult(Activity.RESULT_OK, returnIntent);
             //add function to join room here
             ServerConnector sc = ServerUtil.getServerConnector(this);
-            sc.joinRoom(roomCode, new Player(null, uname, token))
+            Player player = new Player(PlayerUtil.getPlayerId(), uname, token);
+            sc.joinRoom(roomCode, player)
                     .addOnSuccessListener(
                             room -> {
 //                                Intent returnIntent = new Intent();
@@ -113,8 +115,8 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
 //                                returnIntent.putExtra(MainActivity.TOKEN, token);
 //                                setResult(Activity.RESULT_OK, returnIntent);
                                 Intent lobbyIntent = new Intent(this, Lobby.class);
-                                lobbyIntent.putExtra("roomCode", roomCode);
-                                lobbyIntent.putExtra("playerName", uname);
+                                lobbyIntent.putExtra(MainActivity.ROOM, room);
+                                lobbyIntent.putExtra(MainActivity.PLAYER, player);
                                 lobbyIntent.putExtra(MainActivity.TOKEN, token);
                                 lobbyIntent.putExtra("TYPE", "guest");
                                 startActivity(lobbyIntent);
