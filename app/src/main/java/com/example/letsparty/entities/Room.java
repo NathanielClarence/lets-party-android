@@ -23,6 +23,10 @@ public class Room implements Serializable {
         this.players.add(host);
     }
 
+    public void setHost(Player h){
+        this.host = h;
+    }
+
     public String getRoomCode(){
       return roomCode;
     }
