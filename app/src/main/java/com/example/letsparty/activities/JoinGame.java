@@ -1,30 +1,25 @@
 package com.example.letsparty.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.letsparty.PlayerUtil;
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityJoinGameBinding;
 import com.example.letsparty.entities.Player;
-import com.example.letsparty.serverconnector.FirebaseServerConnector;
 import com.example.letsparty.serverconnector.ServerConnector;
-//import com.example.letsparty.serverconnector.ServerUtil;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.zxing.Result;
 
@@ -98,23 +93,14 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
                 throw new Exception("No Nickname/user detected");
             }
 
-//            Intent returnIntent = new Intent();
-//            returnIntent.putExtra("roomCode", roomCode);
-//            returnIntent.putExtra("playerName", uname);
-//            setResult(Activity.RESULT_OK, returnIntent);
-            //add function to join room here
             ServerConnector sc = ServerUtil.getServerConnector(this);
-            sc.joinRoom(roomCode, new Player(null, uname, token))
+            Player player = new Player(PlayerUtil.getPlayerId(), uname, token);
+            sc.joinRoom(roomCode, player)
                     .addOnSuccessListener(
                             room -> {
-//                                Intent returnIntent = new Intent();
-//                                returnIntent.putExtra("roomCode", roomCode);
-//                                returnIntent.putExtra("playerName", uname);
-//                                returnIntent.putExtra(MainActivity.TOKEN, token);
-//                                setResult(Activity.RESULT_OK, returnIntent);
                                 Intent lobbyIntent = new Intent(this, Lobby.class);
-                                lobbyIntent.putExtra("roomCode", roomCode);
-                                lobbyIntent.putExtra("playerName", uname);
+                                lobbyIntent.putExtra(MainActivity.ROOM, room);
+                                lobbyIntent.putExtra(MainActivity.PLAYER, player);
                                 lobbyIntent.putExtra(MainActivity.TOKEN, token);
                                 lobbyIntent.putExtra("TYPE", "guest");
                                 startActivity(lobbyIntent);

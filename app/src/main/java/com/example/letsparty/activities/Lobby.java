@@ -1,8 +1,5 @@
 package com.example.letsparty.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
@@ -20,24 +16,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.example.letsparty.MyFirebaseMessageService;
 import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityLobbyBinding;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
+import com.example.letsparty.exceptions.RoomCancelledException;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-
 import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.util.stream.Collectors;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -46,13 +45,13 @@ public class Lobby extends AppCompatActivity {
 
     private Room room;
     private Player player;
-    private List<String> gameIds;
     private Bitmap bitmap;
     private ImageView qrImage;
     private TextView txtPlayerList;
     private ActivityLobbyBinding binding;
     private TaskCompletionSource<List<String>> startMatchTcs;
     private Timer timer;
+    private BroadcastReceiver br;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +60,8 @@ public class Lobby extends AppCompatActivity {
         binding = ActivityLobbyBinding.inflate(getLayoutInflater());
 
         Intent intent = getIntent();
-        String userType = "else";
-        userType = intent.getStringExtra("TYPE");
-
-        if (userType.equals("guest")){
-            //temporarily set this player as host
-            this.player = new Player("null", intent.getStringExtra("playerName"),
-                    intent.getStringExtra(MainActivity.TOKEN));
-            this.room = new Room(intent.getStringExtra("roomCode"), this.player);
-        }else{
-            this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
-            this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
-        }
+        this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
+        this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
         String roomCode = room.getRoomCode();
 
         binding.textView.setText(roomCode);
@@ -128,26 +117,19 @@ public class Lobby extends AppCompatActivity {
 
     //receive data from server
     public void updatePlayers(){
-        ArrayList<String> p = MyFirebaseMessageService.getPlayerList();
+        List<String> updatedPlayers = MyFirebaseMessageService.getPlayerList();
+        List<String> roomPlayers = room.getPlayers().stream().map(Player::getNickname).collect(Collectors.toList());
 
-        //check if player is host
-        Player firstP = new Player("none", p.get(0), "none");
-        //if current player is not host, change host in room
-        if (!room.getHost().equals(firstP)){
-            Log.e("HOSTC", "HOST CHANGED");
-            room.setHost(firstP);
-        }
-
-        ArrayList<String> roomPlayers = new ArrayList<>();
-        for (Player player1 : room.getPlayers()){
-            roomPlayers.add(player1.getNickname());
-        }
-        Log.e("FSF", String.valueOf(roomPlayers.contains("1202")));
-        for (String p1 : p){
+        //add new players
+        for (String p1 : updatedPlayers){
             if(!roomPlayers.contains(p1)){
                 room.addPlayer(new Player(null, p1, null));
             }
         }
+        //remove players who left
+        roomPlayers.stream()
+                .filter(p -> !updatedPlayers.contains(p))
+                .forEach(p -> room.removePlayerByNickname(p));
 
         String playerList = "PLAYER LIST"+ System.getProperty("line.separator");
         for (Player player1 : room.getPlayers()){
@@ -164,18 +146,26 @@ public class Lobby extends AppCompatActivity {
         binding.startButton.setEnabled(false);
         //binding.readyButton.setEnabled(false);
         waitForMatchStart()
-                .addOnSuccessListener(gameIds -> {
-                    Intent intent = new Intent(this, GameRunner.class);
-                    intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
-                    intent.putExtra(MainActivity.ROOM, this.room);
-                    intent.putExtra(MainActivity.PLAYER, this.player);
-                    startActivity(intent);
-                })
-                .addOnFailureListener(ex -> {
-                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            .addOnSuccessListener(gameIds -> {
+                Intent intent = new Intent(this, GameRunner.class);
+                intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
+                intent.putExtra(MainActivity.ROOM, this.room);
+                intent.putExtra(MainActivity.PLAYER, this.player);
+                startActivity(intent);
+                this.finish();
+            })
+            .addOnFailureListener(ex -> {
+                if (ex instanceof  RoomCancelledException){
+                    Toast.makeText(this, "Room has been cancelled by the host", Toast.LENGTH_SHORT).show();
+                    this.finish();
+                } else {
+                    if (ex.getMessage()!= null && !ex.getMessage().isEmpty()) {
+                        Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                     binding.startButton.setEnabled(true);
                     //binding.readyButton.setEnabled(true);
-                });
+                }
+            });
     }
     private Task<List<String>> waitForMatchStart() {
         TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
@@ -183,14 +173,18 @@ public class Lobby extends AppCompatActivity {
 
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        BroadcastReceiver br = new BroadcastReceiver() {
-
+        br = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //check message that all players are ready
-                List<String> gameIds = intent.getStringArrayListExtra("gameIds");
-                Log.d("broadcast", "start match received");
-                startMatchTcs.trySetResult(gameIds);
+                if (intent.getBooleanExtra("cancelled", false)){
+                    //if message is about how the room is cancelled, then set the task as failed
+                    startMatchTcs.trySetException(new RoomCancelledException());
+                } else {
+                    //if message is how the match should start, then set task as success, with the list of games to be played
+                    List<String> gameIds = intent.getStringArrayListExtra("gameIds");
+                    Log.d("broadcast", "start match received");
+                    startMatchTcs.trySetResult(gameIds);
+                }
 
                 lbm.unregisterReceiver(this);
             }
@@ -199,15 +193,15 @@ public class Lobby extends AppCompatActivity {
         lbm.registerReceiver(br, filter);
         Log.d("broadcast", "start match registered");
 
-        //the following code is a stub for testing purposes
-        //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
-        //return tcs.getTask();
-        //specify timeout
-        new Handler().postDelayed(
-                () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
-                60000
-        );
+        //specify timeout after 1 minute
+        //only for host because they're the one who needs to start the game
+        //other players can wait indefinitely
+        if (player.equals(room.getHost())) {
+            new Handler().postDelayed(
+                    () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
+                    60000
+            );
+        }
         return startMatchTcs.getTask();
     }
 
@@ -230,5 +224,33 @@ public class Lobby extends AppCompatActivity {
         }catch (WriterException e) {
             Log.v("QR ERROR: ", e.toString());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String quitMessage = this.player.equals(this.room.getHost()) ?
+                "Cancel the match?" :
+                "Quit the room?";
+        builder.setMessage(quitMessage)
+                .setPositiveButton("Quit", (dialog, i) -> this.quitRoom())
+                .setNegativeButton("Cancel", (dialog, i) -> dialog.dismiss())
+                .show();
+    }
+
+    private void quitRoom(){
+        ServerConnector sc = ServerUtil.getServerConnector(this);
+        sc.quitRoom(this.room.getRoomCode(), this.player)
+            .addOnSuccessListener(res -> this.finish())
+            .addOnFailureListener(ex -> Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        timer.cancel();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+        startMatchTcs.trySetException(new RuntimeException());
     }
 }

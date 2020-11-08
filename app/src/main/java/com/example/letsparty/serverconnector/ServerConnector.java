@@ -15,7 +15,7 @@ public interface ServerConnector {
 
     Task<Room> createRoom(Player player);
     Task<Room> joinRoom(String roomCode, Player player);
-    void quitRoom(String roomCode, String playerId);
+    Task<Boolean> quitRoom(String roomCode, Player player);
     void changeNickname(String roomCode, String playerId, String nickname);
 
     Task<Boolean> startMatch(String roomCode, Player player);
