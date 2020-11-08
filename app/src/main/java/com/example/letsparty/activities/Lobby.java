@@ -86,7 +86,7 @@ public class Lobby extends AppCompatActivity {
         binding.startButton.setOnClickListener(view -> startMatch());
         //binding.readyButton.setOnClickListener(view -> readyForMatch());
 
-        txtPlayerList = findViewById(R.id.textView2);
+        txtPlayerList = binding.textView2;
 
         setContentView(binding.getRoot());
 
@@ -97,8 +97,10 @@ public class Lobby extends AppCompatActivity {
         timer.scheduleAtFixedRate(new TimerTask() {
 
             public void run() {
-                updatePlayers();
-                txtPlayerList.invalidate();
+                runOnUiThread(() -> {
+                    updatePlayers();
+                    txtPlayerList.invalidate();
+                });
             }
 
         },1000, 1000);
