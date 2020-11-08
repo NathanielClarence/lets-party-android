@@ -24,18 +24,22 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameRunner extends AppCompatActivity {
     private Room room;
     private Player player;
     private List<String> gameIds;
-    TextView scores; //for testing only
+    TextView scores;
+    TextView winnerText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_runner);
         scores = findViewById(R.id.score);
+        winnerText = findViewById(R.id.winnerText);
 
 
         Intent intent = getIntent();
@@ -86,7 +90,17 @@ public class GameRunner extends AppCompatActivity {
             .addOnCompleteListener(task -> {
                 if (i < this.gameIds.size()) {
                     //if there are games remaining, go to next game
-                    runGame(i);
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask()
+                    {
+
+                        public void run()
+                        {
+                            runGame(i);
+                        }
+
+                    }, 4000);
+
                 } else {
                     //if no games remaining, go to result screen
                     Intent intent = new Intent(this, Results.class);
@@ -107,11 +121,12 @@ public class GameRunner extends AppCompatActivity {
             {
                 String winner = intent.getStringExtra("winner");
                 System.out.println("***************received winner in GameRunner is: " + winner);
+                winnerText.setText("Winner is: " + winner);
                 if(player.getNickname().equals(winner))
                 {
                     player.setScore(player.getScore() + 5);
                 }
-                scores.append(player.getNickname() + ": " + player.getScore() + "\n");
+                scores.setText(player.getNickname() + ": " + player.getScore());
                 tcs.trySetResult(true);
                 lbm.unregisterReceiver(this);
             }

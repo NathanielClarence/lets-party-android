@@ -63,7 +63,6 @@ public class MeasureVoice extends Game {
         int maxAmp = recorder.getMaxAmplitude();
         Log.e(TAG, "Amplitude is: " + maxAmp);
         recorder.stop();
-        recorder.reset();
         recorder.release();
         System.out.println("recorded");
         gameFinished(true);
