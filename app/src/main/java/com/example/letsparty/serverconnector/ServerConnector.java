@@ -18,7 +18,7 @@ public interface ServerConnector {
     void quitRoom(String roomCode, String playerId);
     void changeNickname(String roomCode, String playerId, String nickname);
 
-    Task<List<String>> startMatch(String roomCode);
+    Task<Boolean> startMatch(String roomCode, Player player);
 
     //parameters not final, just placeholder for now
     void gameFinish(String roomCode, String playerId, String gameId, double points);

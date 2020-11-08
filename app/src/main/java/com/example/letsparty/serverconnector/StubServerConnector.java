@@ -75,18 +75,18 @@ public class StubServerConnector implements ServerConnector {
     }
 
     @Override
-    public Task<List<String>> startMatch(String roomCode) {
+    public Task<Boolean> startMatch(String roomCode, Player player) {
         ArrayList<String> gameList = new ArrayList<>(Game.GAME_IDS.keySet());
 
         new Handler().postDelayed(() -> {
             LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
-            Intent intent = new Intent("players_ready");
+            Intent intent = new Intent("start_match");
             intent.putStringArrayListExtra("gameIds", gameList);
             Log.d("boradcast", "start match sent");
             lbm.sendBroadcast(intent);
         }, 3000);
 
-        return Tasks.forResult(gameList);
+        return Tasks.forResult(true);
     }
 
     @Override

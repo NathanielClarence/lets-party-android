@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -27,14 +28,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import com.google.zxing.WriterException;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -47,6 +44,7 @@ public class Lobby extends AppCompatActivity {
     private Bitmap bitmap;
     private ImageView qrImage;
     private ActivityLobbyBinding binding;
+    private TaskCompletionSource<List<String>> startMatchTcs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +81,12 @@ public class Lobby extends AppCompatActivity {
     private void startMatch() {
         ServerConnector sc = ServerUtil.getServerConnector(this);
         //tell server the match has started and obtain list of games from server
-        sc.startMatch(room.getRoomCode());
         readyForMatch();
+        sc.startMatch(room.getRoomCode(), player)
+            .addOnFailureListener(exception -> {
+                if (startMatchTcs != null)
+                    startMatchTcs.trySetException(exception);
+            });
     }
 
     private void readyForMatch() {
@@ -107,30 +109,32 @@ public class Lobby extends AppCompatActivity {
 
 
     private Task<List<String>> waitForMatchStart() {
-        TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
+        startMatchTcs = new TaskCompletionSource<>();
 
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
                 //check message that all players are ready
                 List<String> gameIds = intent.getStringArrayListExtra("gameIds");
                 Log.d("broadcast", "start match received");
-                tcs.setResult(gameIds);
+                startMatchTcs.trySetResult(gameIds);
 
                 lbm.unregisterReceiver(this);
             }
         };
-        IntentFilter filter = new IntentFilter("players_ready");
+        IntentFilter filter = new IntentFilter("start_match");
         lbm.registerReceiver(br, filter);
         Log.d("broadcast", "start match registered");
 
-        //the following code is a stub for testing purposes
-        //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
-        //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
-
-        return tcs.getTask();
+        //specify timeout
+        new Handler().postDelayed(
+                () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
+                60000
+        );
+        return startMatchTcs.getTask();
     }
 
     private void generateQRCode(String RoomCode){

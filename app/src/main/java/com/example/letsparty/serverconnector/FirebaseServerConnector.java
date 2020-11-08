@@ -1,13 +1,12 @@
 package com.example.letsparty.serverconnector;
 
-import android.util.Log;
-
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
+import com.example.letsparty.exceptions.AlreadyJoinedException;
+import com.example.letsparty.exceptions.RoomNotFoundException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.FirebaseFunctionsException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,28 +22,7 @@ public class FirebaseServerConnector implements ServerConnector{
 
     @Override
     public Task<Room> createRoom(Player host) {
-
-// Dialog for player name
         return getRoom(mFunctions, host)
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Exception e = task.getException();
-                        if (e instanceof FirebaseFunctionsException) {
-                            FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
-                            FirebaseFunctionsException.Code code = ffe.getCode();
-                            Object details = ffe.getDetails();
-                        }
-                        // ...
-                        /* Log.w(TAG, "addNumbers:onFailure", e);
-                        showSnackbar("An error occurred.");
-                        return; */
-                    }
-                    // ...
-                    String result = task.getResult();
-                    //binding.fieldAddResult.setText(String.valueOf(result));
-                    Log.d("createRoom", result );
-
-                })
                 .onSuccessTask(roomCode -> Tasks.forResult(new Room(roomCode, host)));
     }
     private Task<String> getRoom(FirebaseFunctions mFunctions, Player player) {
@@ -69,7 +47,30 @@ public class FirebaseServerConnector implements ServerConnector{
     }
     @Override
     public Task<Room> joinRoom(String roomCode, Player player) {
-        return null;
+        // Create the arguments to the callable function.
+        // Here is a website to get help with calling functions
+        // https://firebase.google.com/docs/functions/callable#java_2
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", roomCode);
+        data.put("playerName", player.getNickname());
+        data.put("token", player.getToken());
+
+        return mFunctions.getHttpsCallable("joinRoom")
+                .call(data)
+                //check for exceptions
+                .continueWith(task -> {
+                    String result = (String) task.getResult().getData();
+                    switch(result){
+                        case "ROOMNOTFOUND": throw new RoomNotFoundException(roomCode);
+                        case "BADNAME": throw new AlreadyJoinedException(roomCode, player.getNickname());
+                        default: return result;
+                    }
+                })
+                //return room
+                .onSuccessTask(roomString -> {
+                    Room room = Room.processRoomString(roomString, roomCode, player);
+                    return Tasks.forResult(room);
+                });
     }
 
     @Override
@@ -83,8 +84,24 @@ public class FirebaseServerConnector implements ServerConnector{
     }
 
     @Override
-    public Task<List<String>> startMatch(String roomCode) {
-        return null;
+    public Task<Boolean> startMatch(String roomCode, Player player) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", roomCode);
+        data.put("playerName", player.getNickname());
+        data.put("token", player.getToken());
+
+        return mFunctions.getHttpsCallable("startGame")
+                .call(data)
+                //check for exceptions
+                .continueWith(task -> {
+                    String result = (String) task.getResult().getData();
+                    switch(result){
+                        case "ROOMNOTFOUND": throw new RoomNotFoundException(roomCode);
+                        case "BADNAME": throw new RuntimeException("Only the host can start the match");
+                        case "OK": return true;   //success is denoted by empty string
+                        default: throw new RuntimeException("Unknown message " + result);
+                    }
+                });
     }
 
     @Override

@@ -17,11 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+
 import com.example.letsparty.PlayerUtil;
-import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityMainBinding;
 import com.example.letsparty.entities.Player;
-import com.example.letsparty.exceptions.RoomNotFoundException;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -122,11 +121,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
             })
             .addOnFailureListener(exception -> {
                 //if room not found, display an error message
-                if (exception instanceof RoomNotFoundException) {
-                    String errorText = getString(R.string.error_room_number) + " " + roomCode;
-                    Toast errorToast = Toast.makeText(getApplicationContext(), errorText, Toast.LENGTH_SHORT);
-                    errorToast.show();
-                }
+                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
             });
     }
 

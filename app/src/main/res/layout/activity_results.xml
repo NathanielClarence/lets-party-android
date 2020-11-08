@@ -10,8 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="20dp">
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="-183dp">
 
         <TextView
             android:id="@+id/textView"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <Button
-            android:id="@+id/startButton"
+            android:id="@+id/btn_returnHome"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="10000dp"
             android:layout_height="100dp"
