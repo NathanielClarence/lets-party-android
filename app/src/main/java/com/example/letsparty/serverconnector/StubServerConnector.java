@@ -110,6 +110,13 @@ public class StubServerConnector implements ServerConnector {
     @Override
     public Task<Object> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success)
     {
+        new Handler().postDelayed(() -> {
+            LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
+            Intent intent = new Intent("game_ready");
+            intent.putExtra("winner", playerName);
+            Log.d("boradcast", "game sent");
+            lbm.sendBroadcast(intent);
+        }, 3000);
         return null;
     }
 

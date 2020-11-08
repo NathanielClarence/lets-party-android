@@ -104,6 +104,7 @@ public class GameRunner extends AppCompatActivity {
                     } else {
                         //if no games remaining, go to result screen
                         Intent intent = new Intent(this, Results.class);
+                        intent.putExtra(MainActivity.ROOM, this.room);
                         startActivity(intent);
                         finish();
                     }
