@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -176,6 +177,8 @@ public class Lobby extends AppCompatActivity {
     }
     private Task<List<String>> waitForMatchStart() {
         TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
+        startMatchTcs = new TaskCompletionSource<>();
+
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver() {
@@ -198,6 +201,12 @@ public class Lobby extends AppCompatActivity {
         //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
         //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
         return tcs.getTask();
+        //specify timeout
+        new Handler().postDelayed(
+                () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
+                60000
+        );
+        return startMatchTcs.getTask();
     }
 
     private void generateQRCode(String RoomCode){
