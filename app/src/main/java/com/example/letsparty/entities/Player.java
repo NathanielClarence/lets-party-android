@@ -7,11 +7,13 @@ public class Player implements Serializable {
     private String id;
     private String nickname;
     private String token;
+    private long score;
 
     public Player(String id, String nickname,String token) {
         this.id = id;
         this.nickname = nickname;
         this.token = token;
+        this.score = 0;
     }
 
     public String getId(){
@@ -29,6 +31,8 @@ public class Player implements Serializable {
         return token;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -42,5 +46,15 @@ public class Player implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, nickname, token);
+    }
+
+    public long getScore()
+    {
+        return score;
+    }
+
+    public void setScore(long score)
+    {
+        this.score = score;
     }
 }

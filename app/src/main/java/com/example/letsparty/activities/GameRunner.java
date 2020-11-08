@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.letsparty.R;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
 import com.example.letsparty.games.Game;
@@ -27,10 +29,14 @@ public class GameRunner extends AppCompatActivity {
     private Room room;
     private Player player;
     private List<String> gameIds;
+    TextView scores; //for testing only
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game_runner);
+        scores = findViewById(R.id.score);
+
 
         Intent intent = getIntent();
         this.room = (Room) intent.getSerializableExtra(MainActivity.ROOM);
@@ -58,13 +64,19 @@ public class GameRunner extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK)
+        {
             //placeholder for calculating point. Can be changed later
-            double points = (2000 - data.getLongExtra(Game.TIME_ELAPSED, 2000)) / 1000.0;
 
+            player.setScore(player.getScore() + 10);//only for testing
             //send game completion to server
             ServerConnector sc = ServerUtil.getServerConnector(this);
-            sc.gameFinish(this.room.getRoomCode(), player.getId(), data.getStringExtra(Game.GAME_ID), points);
+            long time = data.getLongExtra(Game.TIME_ELAPSED, 0);
+            String gameId = data.getStringExtra(Game.GAME_ID);
+            boolean success = data.getBooleanExtra(Game.SUCCESS, true);
+            sc.gameFinish(this.room.getRoomCode(), player.getNickname(), gameId, time, 0, success);
+            //sc.gameFinish();
+            scores.setText(player.getNickname() + ": " + player.getScore() + "\n" + "new line");
         }
 
         int i = requestCode + 1;

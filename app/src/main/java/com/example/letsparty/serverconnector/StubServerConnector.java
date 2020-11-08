@@ -89,7 +89,7 @@ public class StubServerConnector implements ServerConnector {
         return Tasks.forResult(true);
     }
 
-    @Override
+    /*@Override
     public void gameFinish(String roomCode, String playerId, String gameId, double points) {
         new Handler().postDelayed(() -> {
             LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
@@ -97,5 +97,12 @@ public class StubServerConnector implements ServerConnector {
             Log.d("boradcast", "game sent");
             lbm.sendBroadcast(intent);
         }, 3000);
+    }*/
+
+    @Override
+    public Task<String> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success)
+    {
+        return null;
     }
+
 }

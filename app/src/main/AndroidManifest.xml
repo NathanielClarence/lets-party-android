@@ -61,10 +61,6 @@
         <activity
             android:name=".games.Landscape"
             android:configChanges="orientation|screenSize" >
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity android:name=".games.ClearDanger" />
         <activity android:name=".games.MeasureVoice">

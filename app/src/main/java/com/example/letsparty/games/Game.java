@@ -22,6 +22,7 @@ public abstract class Game extends AppCompatActivity {
     public static final String END_TIME = "endTime";
     public static final String GAME_ID = "gameId";
     public static final String TAG = "Game";
+    public static final String SUCCESS = "success";
 
     //mapping of game id to class
     public static final Map<String, Class<? extends Game>> GAME_IDS =
@@ -62,13 +63,14 @@ public abstract class Game extends AppCompatActivity {
         timer.cancel();
 
         Intent returnIntent = new Intent();
+        returnIntent.putExtra(SUCCESS, success);
         returnIntent.putExtra(TIME_ELAPSED, endTime - startTime);
-        returnIntent.putExtra(END_TIME, endTime);
         returnIntent.putExtra(GAME_ID, this.getGameId());
+        returnIntent.putExtra(END_TIME, endTime);
         setResult(RESULT_OK, returnIntent);
 
-        Log.e(TAG, "success? " + success);
-        Log.e(TAG, "Time elapsed " + ((endTime - startTime)/1000));
+        Log.e(TAG, "status: " + success);
+        Log.e(TAG, "Time elapsed: " + ((endTime - startTime)/1000));
         Log.e(TAG, "Game ID: " + this.getGameId());
         this.finish();
     }

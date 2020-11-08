@@ -21,5 +21,6 @@ public interface ServerConnector {
     Task<Boolean> startMatch(String roomCode, Player player);
 
     //parameters not final, just placeholder for now
-    void gameFinish(String roomCode, String playerId, String gameId, double points);
+    //void gameFinish(String roomCode, String playerId, String gameId, double points);
+    Task<String> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success);
 }

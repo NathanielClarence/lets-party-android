@@ -104,8 +104,47 @@ public class FirebaseServerConnector implements ServerConnector{
                 });
     }
 
-    @Override
+    /*@Override
     public void gameFinish(String roomCode, String playerId, String gameId, double points) {
 
+    }*/
+
+    public Task<String> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success)
+    {
+        String status = success ? "success":"fail";
+        System.out.println("**************status is: " + status);
+        Map<String, Object> data = new HashMap<>();
+        data.put("room", roomCode);
+        data.put("game", gameId);
+        data.put("playerName", playerName);
+        data.put("status", status);
+        data.put("time", time);
+        data.put("value", null);
+
+        System.out.println("***********roomCode is: " + roomCode);
+        System.out.println("***********gameId is: " + gameId);
+        System.out.println("***********playerName is: " + playerName);
+        System.out.println("***********status is: " + status);
+        System.out.println("***********time is: " + time);
+        System.out.println("***********value is: " + value);
+
+        return mFunctions.getHttpsCallable("onGameComplete")
+                .call(data)
+                //check for exceptions
+                .continueWith(task -> {
+                    String result = (String) task.getResult().getData();
+                    System.out.println("***********onGameComplete result: " + result);
+                    System.out.println(task.getResult().getData());
+                    System.out.println("***********onGameComplete result: " + result);
+                    return result;
+                })
+                //return room
+                .onSuccessTask(resultString -> {
+                    System.out.println("***********resultString: " + resultString);
+                    return Tasks.forResult(resultString);
+                }).addOnFailureListener(exception -> {
+                    System.out.println("**************FAILED**********");
+                    exception.printStackTrace();
+                });
     }
 }
