@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class MyFirebaseMessageService extends FirebaseMessagingService {
     private static final String TAG = "Firebase" ;
+    public static ArrayList<String> playerList = new ArrayList<>();
 
     public MyFirebaseMessageService() {
     }
@@ -68,9 +69,34 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         switch(action){
             case "START": sendStartBroadcast(remoteMessage.getData());
             case "JOIN": break;
+            case "LISTUPDATE":
+                //Data received as string
+                String pList = (String) remoteMessage.getData().get("users");
+                //parse string to arraylist
+                String[] players = pList.split(String.valueOf(','));
+
+                Log.d("LISTUPDATE", pList);
+                //update list of players in lobby
+//                Lobby.updatePlayers(players);
+                MyFirebaseMessageService.playerList.clear();
+                for (String e: players){
+                    MyFirebaseMessageService.playerList.add(e.replaceAll("[^a-zA-Z0-9]", ""));
+                }
+                break;
             //case others: break;
             default: break;
         }
+    }
+
+    public static void addPlayerToList(String n){
+        if (!MyFirebaseMessageService.playerList.contains(n)) {
+            MyFirebaseMessageService.playerList.add(n);
+            Log.e("SS", MyFirebaseMessageService.playerList.toString());
+        }
+    }
+
+    public static ArrayList<String> getPlayerList(){
+        return playerList;
     }
 
     private void sendStartBroadcast(Map<String, String> data){

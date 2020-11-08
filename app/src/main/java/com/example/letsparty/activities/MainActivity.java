@@ -18,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.letsparty.PlayerUtil;
 import com.example.letsparty.databinding.ActivityMainBinding;
 import com.example.letsparty.entities.Player;
+import com.example.letsparty.entities.Room;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
     public static final String ROOM = "room";
     public static final String PLAYER = "playerId";
+    public static final String TOKEN = "TOKEN";
 
     private String playerId;
 
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
         Log.d("Test", "Join button clicked");
         //redirect to activity to ask room number and name
         Intent intent = new Intent(this, JoinGame.class);
+        intent.putExtra(TOKEN, token);
         startActivityForResult(intent, 0);
 
     }
@@ -108,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
             .addOnSuccessListener(room -> {
                 //go to the lobby
                 Intent intent = new Intent(this, Lobby.class);
-                intent.putExtra(ROOM, room);
+                intent.putExtra(ROOM, new Room(roomCode, player));
                 intent.putExtra(PLAYER, player);
                 startActivity(intent);
             })
@@ -145,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
                 Intent intent = new Intent(this, Lobby.class);
                 intent.putExtra(ROOM, room);
                 intent.putExtra(PLAYER, player);
+                intent.putExtra("TYPE", "host");
                 startActivity(intent);
             })
             .addOnFailureListener(exception -> Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_SHORT).show());
