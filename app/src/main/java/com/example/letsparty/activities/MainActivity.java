@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.letsparty.PlayerUtil;
+import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityMainBinding;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
