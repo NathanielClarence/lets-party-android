@@ -68,7 +68,6 @@ public class GameRunner extends AppCompatActivity {
         {
             //placeholder for calculating point. Can be changed later
 
-            player.setScore(player.getScore() + 10);//only for testing
             //send game completion to server
             ServerConnector sc = ServerUtil.getServerConnector(this);
             long time = data.getLongExtra(Game.TIME_ELAPSED, 0);
@@ -76,7 +75,6 @@ public class GameRunner extends AppCompatActivity {
             boolean success = data.getBooleanExtra(Game.SUCCESS, true);
             sc.gameFinish(this.room.getRoomCode(), player.getNickname(), gameId, time, 0, success);
             //sc.gameFinish();
-            scores.setText(player.getNickname() + ": " + player.getScore() + "\n" + "new line");
         }
 
         int i = requestCode + 1;
@@ -109,6 +107,11 @@ public class GameRunner extends AppCompatActivity {
             {
                 String winner = intent.getStringExtra("winner");
                 System.out.println("***************received winner in GameRunner is: " + winner);
+                if(player.getNickname().equals(winner))
+                {
+                    player.setScore(player.getScore() + 5);
+                }
+                scores.append(player.getNickname() + ": " + player.getScore() + "\n");
                 tcs.trySetResult(true);
                 lbm.unregisterReceiver(this);
             }
