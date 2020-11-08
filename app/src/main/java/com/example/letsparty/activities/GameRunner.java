@@ -87,31 +87,32 @@ public class GameRunner extends AppCompatActivity {
 
     private void readyForNextGame(int i) {
         waitForNextGame()
-            .addOnCompleteListener(task -> {
-                if (i < this.gameIds.size()) {
-                    //if there are games remaining, go to next game
-                    Timer timer = new Timer();
-                    timer.schedule(new TimerTask()
-                    {
-
-                        public void run()
+                .addOnCompleteListener(task -> {
+                    if (i < this.gameIds.size()) {
+                        //if there are games remaining, go to next game
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask()
                         {
-                            runGame(i);
-                        }
 
-                    }, 4000);
+                            public void run()
+                            {
+                                runGame(i);
+                            }
 
-                } else {
-                    //if no games remaining, go to result screen
-                    Intent intent = new Intent(this, Results.class);
-                    startActivity(intent);
-                    finish();
-                }
-            });
+                        }, 4000);
+
+                    } else {
+                        //if no games remaining, go to result screen
+                        Intent intent = new Intent(this, Results.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
     }
 
     private Task<Boolean> waitForNextGame(){
         TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
+        scores.setText("");
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver()
@@ -122,11 +123,17 @@ public class GameRunner extends AppCompatActivity {
                 String winner = intent.getStringExtra("winner");
                 System.out.println("***************received winner in GameRunner is: " + winner);
                 winnerText.setText("Winner is: " + winner);
-                if(player.getNickname().equals(winner))
+                List<Player> playersList = room.getPlayers();
+                for(int i=0; i<playersList.size(); i++)
                 {
-                    player.setScore(player.getScore() + 5);
+                    Player p = playersList.get(i);
+                    if (p.getNickname().equals(winner))
+                    {
+                        p.setScore(p.getScore() + 5);
+                        playersList.set(i, p);
+                    }
+                    scores.append(p.getNickname() + ": " + p.getScore() + "\n");
                 }
-                scores.setText(player.getNickname() + ": " + player.getScore());
                 tcs.trySetResult(true);
                 lbm.unregisterReceiver(this);
             }
