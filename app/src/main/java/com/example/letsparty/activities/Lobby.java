@@ -51,7 +51,6 @@ public class Lobby extends AppCompatActivity {
     private TextView txtPlayerList;
     private static ActivityLobbyBinding binding;
     private TaskCompletionSource<List<String>> startMatchTcs;
-    private ArrayList<String> listOfPlayers = new ArrayList<>();
     private Timer timer;
 
     @Override
@@ -91,12 +90,14 @@ public class Lobby extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //check player list every 1 second
+        MyFirebaseMessageService.playerList.clear();
         MyFirebaseMessageService.addPlayerToList(this.player.getNickname());
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
             public void run() {
                 updatePlayers();
+                txtPlayerList.invalidate();
             }
 
         },1000, 1000);
@@ -130,6 +131,7 @@ public class Lobby extends AppCompatActivity {
         Player firstP = new Player("none", p.get(0), "none");
         //if current player is not host, change host in room
         if (!room.getHost().equals(firstP)){
+            Log.e("HOSTC", "HOST CHANGED");
             room.setHost(firstP);
         }
 
@@ -144,12 +146,13 @@ public class Lobby extends AppCompatActivity {
             }
         }
 
-        String playerList = "PLAYER LIST\n";
+        String playerList = "PLAYER LIST"+ System.getProperty("line.separator");
         for (Player player1 : room.getPlayers()){
-            playerList = playerList + player1.getNickname()+"\n";
+            playerList = playerList + player1.getNickname()+System.getProperty("line.separator");
         }
         //set player list
-        //txtPlayerList.setText(playerList);
+        txtPlayerList.setText(playerList);
+        //View v = findViewById(R.id.)
 
         Log.e("LIST", playerList);
     }

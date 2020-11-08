@@ -78,9 +78,9 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                 Log.d("LISTUPDATE", pList);
                 //update list of players in lobby
 //                Lobby.updatePlayers(players);
-                playerList.clear();
+                MyFirebaseMessageService.playerList.clear();
                 for (String e: players){
-                    playerList.add(e.replaceAll("[^a-zA-Z0-9]", ""));
+                    MyFirebaseMessageService.playerList.add(e.replaceAll("[^a-zA-Z0-9]", ""));
                 }
                 break;
             //case others: break;
@@ -89,9 +89,9 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
     }
 
     public static void addPlayerToList(String n){
-        if (!playerList.contains(n)) {
-            playerList.add(n);
-            Log.e("SS", playerList.toString());
+        if (!MyFirebaseMessageService.playerList.contains(n)) {
+            MyFirebaseMessageService.playerList.add(n);
+            Log.e("SS", MyFirebaseMessageService.playerList.toString());
         }
     }
 
