@@ -9,7 +9,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FirebaseServerConnector implements ServerConnector{

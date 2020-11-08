@@ -1,9 +1,5 @@
 package com.example.letsparty.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
@@ -20,6 +15,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.letsparty.MyFirebaseMessageService;
 import com.example.letsparty.R;
@@ -31,15 +30,12 @@ import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-
 import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -48,7 +44,6 @@ public class Lobby extends AppCompatActivity {
 
     private Room room;
     private Player player;
-    private List<String> gameIds;
     private Bitmap bitmap;
     private ImageView qrImage;
     private TextView txtPlayerList;
