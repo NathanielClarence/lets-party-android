@@ -145,7 +145,9 @@ public class Lobby extends AppCompatActivity {
     private void readyForMatch() {
         binding.startButton.setEnabled(false);
         //binding.readyButton.setEnabled(false);
+        binding.progressBar.setVisibility(View.VISIBLE);
         waitForMatchStart()
+            .addOnCompleteListener(task -> binding.progressBar.setVisibility(View.INVISIBLE))
             .addOnSuccessListener(gameIds -> {
                 Intent intent = new Intent(this, GameRunner.class);
                 intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
