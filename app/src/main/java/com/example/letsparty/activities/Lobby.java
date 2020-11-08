@@ -68,12 +68,9 @@ public class Lobby extends AppCompatActivity {
         generateQRCode(roomCode);
 
         boolean isHost = room.getHost().equals(this.player);
+        binding.textView3.setVisibility(isHost ? View.INVISIBLE : View.VISIBLE);
         binding.startButton.setVisibility(isHost ? View.VISIBLE : View.INVISIBLE);
-        //binding.readyButton.setVisibility(isHost ? View.INVISIBLE : View.VISIBLE);
-
-        //binding.editTextTextPersonName.on
         binding.startButton.setOnClickListener(view -> startMatch());
-        //binding.readyButton.setOnClickListener(view -> readyForMatch());
 
         txtPlayerList = binding.textView2;
 
@@ -144,7 +141,6 @@ public class Lobby extends AppCompatActivity {
 
     private void readyForMatch() {
         binding.startButton.setEnabled(false);
-        //binding.readyButton.setEnabled(false);
         binding.progressBar.setVisibility(View.VISIBLE);
         waitForMatchStart()
             .addOnCompleteListener(task -> binding.progressBar.setVisibility(View.INVISIBLE))
@@ -165,7 +161,6 @@ public class Lobby extends AppCompatActivity {
                         Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                     binding.startButton.setEnabled(true);
-                    //binding.readyButton.setEnabled(true);
                 }
             });
     }

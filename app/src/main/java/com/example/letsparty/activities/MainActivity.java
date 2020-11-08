@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
     private String playerId;
     private ImageView title;
 
+    private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
             Log.e("PRM", "granted");
         }
 
-        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
@@ -149,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
     public void onNameDialogPositiveClick(DialogFragment dialog, Player player) {
         //contact server and get a new room id
         ServerConnector sc = ServerUtil.getServerConnector(this);
+        binding.progressBar.setVisibility(View.VISIBLE);
         sc.createRoom(player)
+            .addOnCompleteListener(task -> binding.progressBar.setVisibility(View.INVISIBLE))
             .addOnSuccessListener(room -> {
                 //  roomCreated = room;
                 //  Log.d("ROOM_CREATED", roomCreated.toString());

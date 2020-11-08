@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -32,6 +33,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
     private ZXingScannerView mScannerView;
     private AlertDialog.Builder dialog;
     private ImageView title;
+    private ActivityJoinGameBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -45,7 +47,7 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
         setContentView(R.layout.activity_join_game);
 
         // set View and bindings
-        ActivityJoinGameBinding binding = ActivityJoinGameBinding.inflate(getLayoutInflater());
+        binding = ActivityJoinGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.btnJoinRoom.setOnClickListener(view -> this.joinRoom(binding.edtRoom.getText().toString(),
@@ -93,9 +95,11 @@ public class JoinGame extends AppCompatActivity implements ZXingScannerView.Resu
                 throw new Exception("No Nickname/user detected");
             }
 
+            binding.progressBar.setVisibility(View.VISIBLE);
             ServerConnector sc = ServerUtil.getServerConnector(this);
             Player player = new Player(PlayerUtil.getPlayerId(), uname, token);
             sc.joinRoom(roomCode, player)
+                    .addOnCompleteListener(task -> binding.progressBar.setVisibility(View.INVISIBLE))
                     .addOnSuccessListener(
                             room -> {
                                 Intent lobbyIntent = new Intent(this, Lobby.class);
