@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".games.WordColorV1">
 
     <LinearLayout
@@ -22,8 +23,8 @@
             android:layout_marginTop="250dp"
             android:text="Choose the color of the word"
             android:textAlignment="center"
-            android:textColor="@color/design_default_color_on_secondary"
-            android:textSize="30sp" />
+            android:textColor="@color/main_text"
+            android:textSize="30dp" />
 
         <TextView
             android:id="@+id/word"
@@ -32,7 +33,7 @@
             android:text="Red"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="30sp" />
+            android:textSize="30dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

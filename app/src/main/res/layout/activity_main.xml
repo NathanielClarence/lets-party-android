@@ -4,13 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".activities.MainActivity">
 
     <Button
         android:id="@+id/menu_host"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="1046dp"
+        android:layout_height="200dp"
+        android:background="@color/secondary_colour"
+        android:rotation="-10"
         android:text="@string/menu_host"
+        android:textColor="@color/main_text"
+        android:textSize="36sp"
         app:layout_constraintBottom_toTopOf="@+id/menu_join"
         app:layout_constraintEnd_toEndOf="@+id/guidelineRight"
         app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
@@ -18,21 +24,26 @@
 
     <Button
         android:id="@+id/menu_join"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="1000dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="48dp"
+        android:background="@color/third_colour"
+        android:rotation="-10"
         android:text="@string/menu_join"
+        android:textColor="@color/main_text"
+        android:textSize="36sp"
         app:layout_constraintBottom_toTopOf="@+id/guidelineBot"
         app:layout_constraintEnd_toEndOf="@+id/guidelineRight"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
-        app:layout_constraintTop_toTopOf="@+id/menu_host" />
+        app:layout_constraintTop_toBottomOf="@+id/menu_host" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_end="48dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineLeft"
@@ -53,7 +64,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="0.25" />
+
+    <ImageView
+        android:id="@+id/gameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:tint="@color/title_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_letsparty" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

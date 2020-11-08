@@ -7,6 +7,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -16,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.letsparty.PlayerUtil;
+import com.example.letsparty.R;
 import com.example.letsparty.databinding.ActivityMainBinding;
 import com.example.letsparty.entities.Player;
 import com.example.letsparty.entities.Room;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
     public static final String TOKEN = "TOKEN";
 
     private String playerId;
+    private ImageView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
         binding.menuHost.setOnClickListener(view -> this.onHostClicked());
         binding.menuJoin.setOnClickListener(view -> this.onJoinClicked());
+
+        title = (ImageView) this.findViewById(R.id.gameTitle);
+        titleAnimate(title);
     }
 
     private void onHostClicked(){
@@ -158,5 +166,11 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
     @Override
     public void onNameDialogNegativeClick(DialogFragment dialog) {
 
+    }
+
+    public void titleAnimate(ImageView title) {
+        Animation animUpDown;
+        animUpDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.title_float);
+        title.startAnimation(animUpDown);
     }
 }

@@ -3,13 +3,15 @@
     <!-- Strings used in Main Menu -->
     <string name="menu_host">HOST MATCH</string>
     <string name="menu_join">JOIN MATCH</string>
-    <string name="name">Name</string>
-    <string name="enter_room_number">Enter Room Number</string>
-    <string name="error_room_number">Cannot find room with room number </string>
+    <string name="name">Enter A Nickname...</string>
+    <string name="enter_room_number">Enter Room Code...</string>
+    <string name="error_room_number">Cannot find room with room code </string>
+    <string name="scan_QR">SCAN QR CODE</string>
+    <string name="join_game">JOIN GAME</string>
     <string name="dialog_join">Join</string>
     <!-- Strings used in Lobby -->
     <string name="lobby_start">START GAME</string>
-    <string name="lobby_nickname_hint">Nickname</string>
+    <string name="lobby_nickname_hint">Enter A Nickname...</string>
     <string name="lobby_player_list">PLAYER LIST</string>
     <string name="title_activity_lobby">Lobby</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

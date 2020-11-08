@@ -4,25 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".games.ShakePhone">
 
-    <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+    <TextView
+        android:id="@+id/txt_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:textAlignment="center"
+        android:textColor="@color/main_text"
+        android:textSize="30dp"
+        android:text="No Motion Detected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/txt_instruction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Shake Your Phone" />
+    <TextView
+        android:id="@+id/txt_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="128dp"
+        android:textAlignment="center"
+        android:textColor="@color/main_text"
+        android:textSize="30dp"
+        android:text="Shake Your Phone!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/txt_result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="No Motion Detected" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
