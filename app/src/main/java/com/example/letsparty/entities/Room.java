@@ -47,6 +47,10 @@ public class Room implements Serializable {
         this.players.remove(player);
     }
 
+    public void removePlayerByNickname(String playerName){
+        this.players.removeIf(p -> p.getNickname().equals(playerName));
+    }
+
     public void changePlayerNickname(Player player, String nickname){
         this.players.stream()
                 .filter(p -> p.equals(player))

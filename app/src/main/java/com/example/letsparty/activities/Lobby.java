@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -116,18 +117,19 @@ public class Lobby extends AppCompatActivity {
 
     //receive data from server
     public void updatePlayers(){
-        ArrayList<String> p = MyFirebaseMessageService.getPlayerList();
+        List<String> updatedPlayers = MyFirebaseMessageService.getPlayerList();
+        List<String> roomPlayers = room.getPlayers().stream().map(Player::getNickname).collect(Collectors.toList());
 
-        ArrayList<String> roomPlayers = new ArrayList<>();
-        for (Player player1 : room.getPlayers()){
-            roomPlayers.add(player1.getNickname());
-        }
-        Log.e("FSF", String.valueOf(roomPlayers.contains("1202")));
-        for (String p1 : p){
+        //add new players
+        for (String p1 : updatedPlayers){
             if(!roomPlayers.contains(p1)){
                 room.addPlayer(new Player(null, p1, null));
             }
         }
+        //remove players who left
+        roomPlayers.stream()
+                .filter(p -> !updatedPlayers.contains(p))
+                .forEach(p -> room.removePlayerByNickname(p));
 
         String playerList = "PLAYER LIST"+ System.getProperty("line.separator");
         for (Player player1 : room.getPlayers()){
