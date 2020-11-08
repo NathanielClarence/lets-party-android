@@ -101,14 +101,22 @@ public class GameRunner extends AppCompatActivity {
     private Task<Boolean> waitForNextGame(){
         TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
 
-        //the following snippet is UNTESTED code for receiving a message from Firebase when all players are ready
-        BroadcastReceiver br = new GameBroadcastReceiver(tcs);
-        IntentFilter filter = new IntentFilter("game_ready");
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        lbm.registerReceiver(br, filter);
-        Log.d("broadcast", "next game registered");
+        BroadcastReceiver br = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                String winner = intent.getStringExtra("winner");
+                System.out.println("***************received winner in GameRunner is: " + winner);
+                tcs.trySetResult(true);
+                lbm.unregisterReceiver(this);
+            }
+        };
 
-        //tcs.setResult(true); //placeholder
+        IntentFilter filter = new IntentFilter("game_ready");
+        lbm.registerReceiver(br, filter);
+
         return tcs.getTask();
     }
 

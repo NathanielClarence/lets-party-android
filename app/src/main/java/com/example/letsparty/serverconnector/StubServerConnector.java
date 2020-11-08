@@ -100,7 +100,7 @@ public class StubServerConnector implements ServerConnector {
     }*/
 
     @Override
-    public Task<String> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success)
+    public Task<Object> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success)
     {
         return null;
     }

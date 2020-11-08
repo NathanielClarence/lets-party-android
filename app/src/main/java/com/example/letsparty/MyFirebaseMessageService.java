@@ -45,7 +45,8 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
+        if (remoteMessage.getData().size() > 0)
+        {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
             if (/* Check if data needs to be processed by long running job */ true) {
@@ -66,7 +67,9 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
         String action = remoteMessage.getData().get("action");
-        switch(action){
+        System.out.println("*****************Received action is: " + action);
+        switch(action)
+        {
             case "START": sendStartBroadcast(remoteMessage.getData());
             case "JOIN": break;
             case "LISTUPDATE":
@@ -83,7 +86,10 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                     MyFirebaseMessageService.playerList.add(e.replaceAll("[^a-zA-Z0-9]", ""));
                 }
                 break;
-            //case others: break;
+            case "ENDGAME":
+                System.out.println("*********ENDGAME********");
+                sendEndGameBroadcast(remoteMessage.getData().get("winner"));
+                break;
             default: break;
         }
     }
@@ -116,6 +122,14 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         Intent intent = new Intent("start_match");
         intent.putStringArrayListExtra("gameIds", games);
+        lbm.sendBroadcast(intent);
+    }
+
+    private void sendEndGameBroadcast(String winner)
+    {
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        Intent intent = new Intent("game_ready");
+        intent.putExtra("winner", winner);
         lbm.sendBroadcast(intent);
     }
 }

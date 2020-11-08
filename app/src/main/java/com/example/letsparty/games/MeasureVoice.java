@@ -35,7 +35,7 @@ public class MeasureVoice extends Game {
                 end();
             }
 
-        }, super.getDelay());
+        }, 10000);
     }
 
     public void listen()

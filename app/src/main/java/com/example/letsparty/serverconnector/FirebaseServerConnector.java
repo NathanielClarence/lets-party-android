@@ -109,7 +109,7 @@ public class FirebaseServerConnector implements ServerConnector{
 
     }*/
 
-    public Task<String> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success)
+    public Task<Object> gameFinish(String roomCode, String playerName, String gameId, double time, double value, boolean success)
     {
         String status = success ? "success":"fail";
         System.out.println("**************status is: " + status);
@@ -132,9 +132,7 @@ public class FirebaseServerConnector implements ServerConnector{
                 .call(data)
                 //check for exceptions
                 .continueWith(task -> {
-                    String result = (String) task.getResult().getData();
-                    System.out.println("***********onGameComplete result: " + result);
-                    System.out.println(task.getResult().getData());
+                    Object result = task.getResult().getData();
                     System.out.println("***********onGameComplete result: " + result);
                     return result;
                 })
