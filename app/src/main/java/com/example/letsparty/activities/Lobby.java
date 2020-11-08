@@ -44,13 +44,13 @@ import androidmads.library.qrgenearator.QRGEncoder;
 
 public class Lobby extends AppCompatActivity {
 
-    private static Room room;
+    private Room room;
     private Player player;
     private List<String> gameIds;
     private Bitmap bitmap;
     private ImageView qrImage;
     private TextView txtPlayerList;
-    private static ActivityLobbyBinding binding;
+    private ActivityLobbyBinding binding;
     private TaskCompletionSource<List<String>> startMatchTcs;
     private Timer timer;
 
@@ -200,7 +200,7 @@ public class Lobby extends AppCompatActivity {
         //the following code is a stub for testing purposes
         //List<String> gameIds = Stream.of("ClearDanger", "Landscape", "MeasureVoice").collect(Collectors.toList());
         //new Handler().postDelayed(() -> tcs.setResult(gameIds), 5000);
-        return tcs.getTask();
+        //return tcs.getTask();
         //specify timeout
         new Handler().postDelayed(
                 () -> startMatchTcs.trySetException(new RuntimeException("Timeout")),
