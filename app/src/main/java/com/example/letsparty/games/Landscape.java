@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.example.letsparty.R;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class Landscape extends Game
 {
@@ -30,8 +33,17 @@ public class Landscape extends Game
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
-            text.setText("Success!");
-            gameFinished(true);
+            text.setText("Switched!");
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask()
+            {
+
+                public void run()
+                {
+                    gameFinished(true);
+                }
+
+            }, 3000);
         }
     }
 

@@ -101,7 +101,7 @@ public class GameRunner extends AppCompatActivity {
                                 runGame(i);
                             }
 
-                        }, 4000);
+                        }, 3000);
 
                     } else {
                         //if no games remaining, go to result screen
