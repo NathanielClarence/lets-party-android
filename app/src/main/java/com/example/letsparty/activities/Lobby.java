@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -28,6 +29,7 @@ import com.example.letsparty.entities.Room;
 import com.example.letsparty.exceptions.RoomCancelledException;
 import com.example.letsparty.serverconnector.ServerConnector;
 import com.example.letsparty.serverconnector.ServerUtil;
+import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.zxing.WriterException;
@@ -50,8 +52,10 @@ public class Lobby extends AppCompatActivity {
     private TextView txtPlayerList;
     private ActivityLobbyBinding binding;
     private TaskCompletionSource<List<String>> startMatchTcs;
+    private CancellationTokenSource startMatchCts = new CancellationTokenSource();
     private Timer timer;
     private BroadcastReceiver br;
+    private boolean isWaiting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,16 @@ public class Lobby extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //if not the host, the go straight into waiting
+        if (!room.getHost().equals(this.player)) {
+            readyForMatch();
+        }
+
         //check player list every 1 second
         MyFirebaseMessageService.playerList.clear();
         MyFirebaseMessageService.addPlayerToList(this.player.getNickname());
@@ -90,14 +104,6 @@ public class Lobby extends AppCompatActivity {
             }
 
         },1000, 1000);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!room.getHost().equals(this.player)) {
-            readyForMatch();
-        }
     }
 
     private void startMatch() {
@@ -142,8 +148,12 @@ public class Lobby extends AppCompatActivity {
     private void readyForMatch() {
         binding.startButton.setEnabled(false);
         binding.progressBar.setVisibility(View.VISIBLE);
+        isWaiting = true;
         waitForMatchStart()
-            .addOnCompleteListener(task -> binding.progressBar.setVisibility(View.INVISIBLE))
+            .addOnCompleteListener(task -> {
+                isWaiting = false;
+                binding.progressBar.setVisibility(View.INVISIBLE);
+            })
             .addOnSuccessListener(gameIds -> {
                 Intent intent = new Intent(this, GameRunner.class);
                 intent.putStringArrayListExtra("gameIds",new ArrayList<>(gameIds));
@@ -165,8 +175,7 @@ public class Lobby extends AppCompatActivity {
             });
     }
     private Task<List<String>> waitForMatchStart() {
-        TaskCompletionSource<List<String>>  tcs= new TaskCompletionSource<>();
-        startMatchTcs = new TaskCompletionSource<>();
+        startMatchTcs = new TaskCompletionSource<>(startMatchCts.getToken());
 
         //use broadcast receiver to receive messages to start the match
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
@@ -238,16 +247,47 @@ public class Lobby extends AppCompatActivity {
     private void quitRoom(){
         ServerConnector sc = ServerUtil.getServerConnector(this);
         sc.quitRoom(this.room.getRoomCode(), this.player)
-            .addOnSuccessListener(res -> this.finish())
+            .addOnSuccessListener(res ->{
+                this.cleanup();
+                this.finish();
+            })
             .addOnFailureListener(ex -> Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean("waiting", isWaiting);
+        if (isWaiting) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+            startMatchCts.cancel();
+        }
+        super.onSaveInstanceState(outState);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.isWaiting = savedInstanceState.getBoolean("waiting");
+        if (isWaiting)
+            this.readyForMatch();
+    }
+
+    private void cleanup(){
         timer.cancel();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
-        startMatchTcs.trySetException(new RuntimeException());
+        if (br != null)
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+        startMatchCts.cancel();
+    }
+
+    @Override
+    protected void onStop() {
+        cleanup();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        cleanup();
+        super.onDestroy();
     }
 }
