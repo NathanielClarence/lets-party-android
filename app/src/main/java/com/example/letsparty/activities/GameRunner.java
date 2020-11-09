@@ -7,9 +7,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -37,8 +39,9 @@ public class GameRunner extends AppCompatActivity {
     private boolean isWaiting = false;
     private int currentGameIndex = 0;
     private BroadcastReceiver br;
-    private TaskCompletionSource<Boolean> tcs;
-    private CancellationTokenSource cts = new CancellationTokenSource();
+    private TaskCompletionSource<Boolean> nextGameTcs;
+    private CancellationTokenSource nextGameCts = new CancellationTokenSource();
+    private Handler nextGameHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,19 +84,21 @@ public class GameRunner extends AppCompatActivity {
         scores.setText("");
         if (resultCode == RESULT_OK)
         {
-            //placeholder for calculating point. Can be changed later
-
-            //send game completion to server
+             //send game completion to server
             ServerConnector sc = ServerUtil.getServerConnector(this);
             long time = data.getLongExtra(Game.TIME_ELAPSED, 0);
             String gameId = data.getStringExtra(Game.GAME_ID);
             boolean success = data.getBooleanExtra(Game.SUCCESS, true);
             sc.gameFinish(this.room.getRoomCode(), player.getNickname(), gameId, time, 0, success);
             //sc.gameFinish();
+
+            currentGameIndex = requestCode + 1;
+            readyForNextGame(currentGameIndex);
+        } else {
+            this.quitRoom();
         }
 
-        currentGameIndex = requestCode + 1;
-        readyForNextGame(currentGameIndex);
+
     }
 
     private void readyForNextGame(int i) {
@@ -110,7 +115,8 @@ public class GameRunner extends AppCompatActivity {
                             return;
 
                         //start the next game after a few seconds so user can see the results
-                        new Handler().postDelayed(
+                        nextGameHandler = new Handler();
+                        nextGameHandler.postDelayed(
                                 () -> runGame(i),
                                 3000
                         );
@@ -125,7 +131,7 @@ public class GameRunner extends AppCompatActivity {
     }
 
     private Task<Boolean> waitForNextGame(){
-        tcs = new TaskCompletionSource<>(cts.getToken());
+        nextGameTcs = new TaskCompletionSource<>(nextGameCts.getToken());
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         br = new BroadcastReceiver()
@@ -147,7 +153,7 @@ public class GameRunner extends AppCompatActivity {
                     }
                     scores.append(p.getNickname() + ": " + p.getScore() + "\n");
                 }
-                tcs.trySetResult(true);
+                nextGameTcs.trySetResult(true);
                 lbm.unregisterReceiver(this);
             }
         };
@@ -155,7 +161,35 @@ public class GameRunner extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("game_ready");
         lbm.registerReceiver(br, filter);
 
-        return tcs.getTask();
+        return nextGameTcs.getTask();
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String quitMessage = "Quit the room?";
+        builder.setMessage(quitMessage)
+                .setPositiveButton("Quit", (dialog, i) -> this.quitRoom())
+                .setNegativeButton("Cancel", (dialog, i) -> dialog.dismiss())
+                .show();
+    }
+
+    public void quitRoom() {
+        ServerConnector sc = ServerUtil.getServerConnector(this);
+        sc.quitRoom(this.room.getRoomCode(), this.player)
+                .addOnSuccessListener(res ->{
+                    this.cleanup();
+                    this.finish();
+                })
+                .addOnFailureListener(ex -> Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void cleanup() {
+        if (br != null)
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+        nextGameCts.cancel();
+        if (nextGameHandler != null)
+            nextGameHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -168,7 +202,7 @@ public class GameRunner extends AppCompatActivity {
         outState.putString("scoreText", scores.getText().toString());
         if (isWaiting) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
-            cts.cancel();
+            nextGameCts.cancel();
         }
         super.onSaveInstanceState(outState);
     }

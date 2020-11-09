@@ -1,16 +1,13 @@
 package com.example.letsparty.games;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.letsparty.R;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
-import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -86,5 +83,18 @@ public abstract class Game extends AppCompatActivity {
 
     public long getDelay(){
         return this.delay;
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String quitMessage = "Give up this game and quit?";
+        builder.setMessage(quitMessage)
+                .setPositiveButton("Quit", (dialog, i) -> {
+                    this.setResult(RESULT_CANCELED);
+                    this.finish();
+                })
+                .setNegativeButton("Cancel", (dialog, i) -> dialog.dismiss())
+                .show();
     }
 }
