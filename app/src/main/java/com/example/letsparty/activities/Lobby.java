@@ -195,8 +195,10 @@ public class Lobby extends AppCompatActivity {
                 lbm.unregisterReceiver(this);
             }
         };
-        IntentFilter filter = new IntentFilter("start_match");
-        lbm.registerReceiver(br, filter);
+        IntentFilter startFilter = new IntentFilter("start_match");
+        IntentFilter cancelFilter = new IntentFilter("cancel_match");
+        lbm.registerReceiver(br, startFilter);
+        lbm.registerReceiver(br, cancelFilter);
         Log.d("broadcast", "start match registered");
 
         //specify timeout after 1 minute

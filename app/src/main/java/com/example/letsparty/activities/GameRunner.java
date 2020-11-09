@@ -38,7 +38,8 @@ public class GameRunner extends AppCompatActivity {
     TextView winnerText;
     private boolean isWaiting = false;
     private int currentGameIndex = 0;
-    private BroadcastReceiver br;
+    private BroadcastReceiver nextGameBr;
+    private BroadcastReceiver cancelGameBr;
     private TaskCompletionSource<Boolean> nextGameTcs;
     private CancellationTokenSource nextGameCts = new CancellationTokenSource();
     private Handler nextGameHandler;
@@ -58,9 +59,22 @@ public class GameRunner extends AppCompatActivity {
         Arrays.fill(this.gameStarted, false);
         this.player = (Player) intent.getSerializableExtra(MainActivity.PLAYER);
 
+        cancelGameBr = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                cleanup();
+                finish();
+                Toast.makeText(context, "Host has ended the match", Toast.LENGTH_SHORT).show();
+            }
+        };
+        IntentFilter cancelFilter = new IntentFilter("cancel_match");
+        LocalBroadcastManager.getInstance(this).registerReceiver(cancelGameBr, cancelFilter);
+
         //only start the game if the state isn't recreated
         if (savedInstanceState == null)
             runGame(0);
+
+
     }
 
     private void runGame(int i){
@@ -134,7 +148,7 @@ public class GameRunner extends AppCompatActivity {
         nextGameTcs = new TaskCompletionSource<>(nextGameCts.getToken());
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        br = new BroadcastReceiver()
+        nextGameBr = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
@@ -159,7 +173,7 @@ public class GameRunner extends AppCompatActivity {
         };
 
         IntentFilter filter = new IntentFilter("game_ready");
-        lbm.registerReceiver(br, filter);
+        lbm.registerReceiver(nextGameBr, filter);
 
         return nextGameTcs.getTask();
     }
@@ -185,8 +199,10 @@ public class GameRunner extends AppCompatActivity {
     }
 
     private void cleanup() {
-        if (br != null)
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+        if (nextGameBr != null)
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(nextGameBr);
+        if (cancelGameBr != null)
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelGameBr);
         nextGameCts.cancel();
         if (nextGameHandler != null)
             nextGameHandler.removeCallbacksAndMessages(null);
@@ -201,7 +217,7 @@ public class GameRunner extends AppCompatActivity {
         outState.putString("winnerText", winnerText.getText().toString());
         outState.putString("scoreText", scores.getText().toString());
         if (isWaiting) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(nextGameBr);
             nextGameCts.cancel();
         }
         super.onSaveInstanceState(outState);
