@@ -33,6 +33,10 @@ public class GameRunner extends AppCompatActivity {
     private List<String> gameIds;
     TextView scores;
     TextView winnerText;
+    private boolean isWaiting = false;
+    private int currentGameIndex = 0;
+    private BroadcastReceiver br;
+    private TaskCompletionSource<Boolean> tcs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,13 +87,15 @@ public class GameRunner extends AppCompatActivity {
             //sc.gameFinish();
         }
 
-        int i = requestCode + 1;
-        readyForNextGame(i);
+        currentGameIndex = requestCode + 1;
+        readyForNextGame(currentGameIndex);
     }
 
     private void readyForNextGame(int i) {
+        isWaiting = true;
         waitForNextGame()
-                .addOnCompleteListener(task -> {
+                .addOnSuccessListener(res -> {
+                    isWaiting = false;
                     if (i < this.gameIds.size()) {
                         //if there are games remaining, go to next game
                         Timer timer = new Timer();
@@ -114,10 +120,10 @@ public class GameRunner extends AppCompatActivity {
     }
 
     private Task<Boolean> waitForNextGame(){
-        TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
+        tcs = new TaskCompletionSource<>();
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        BroadcastReceiver br = new BroadcastReceiver()
+        br = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
@@ -150,6 +156,14 @@ public class GameRunner extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putStringArrayList("gameIds", new ArrayList<>(this.gameIds));
+        outState.putBoolean("waiting", isWaiting);
+        outState.putInt("currentGameIndex", currentGameIndex);
+        outState.putString("winnerText", winnerText.getText().toString());
+        outState.putString("scoreText", scores.getText().toString());
+        if (isWaiting) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+            tcs.setException(new RuntimeException());
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -157,21 +171,13 @@ public class GameRunner extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         this.gameIds = savedInstanceState.getStringArrayList("gameIds");
+        this.winnerText.setText(savedInstanceState.getString("winnerText"));
+        this.scores.setText(savedInstanceState.getString("scoreText"));
+
+        this.isWaiting = savedInstanceState.getBoolean("waiting");
+        this.currentGameIndex = savedInstanceState.getInt("currentGameIndex");
+        if (isWaiting)
+            this.readyForNextGame(currentGameIndex);
     }
 
-    private static class GameBroadcastReceiver extends BroadcastReceiver{
-        private TaskCompletionSource<Boolean> tcs;
-
-        GameBroadcastReceiver(TaskCompletionSource<Boolean> tcs){
-            this.tcs = tcs;
-        }
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            tcs.setResult(true);
-            Log.d("broadcast", "next game received");
-
-            LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
-            lbm.unregisterReceiver(this);
-        }
-    }
 }
