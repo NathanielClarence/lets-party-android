@@ -60,6 +60,17 @@ public class StubServerConnector implements ServerConnector {
 
         //add the player
         room.addPlayer(player);
+
+        //simulate joining the match after a few seconds of waiting
+        ArrayList<String> gameList = new ArrayList<>(Game.GAME_IDS.keySet());
+        new Handler().postDelayed(() -> {
+            LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
+            Intent intent = new Intent("start_match");
+            intent.putStringArrayListExtra("gameIds", gameList);
+            Log.d("boradcast", "start match sent");
+            lbm.sendBroadcast(intent);
+        }, 10000);
+
         return Tasks.forResult(room);
     }
 

@@ -139,7 +139,7 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
     private void sendMatchCancelledBroadcast() {
         //broadcast that the match is cancelled
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        Intent intent = new Intent("start_match");
+        Intent intent = new Intent("cancel_match");
         intent.putExtra("cancelled", true);
         lbm.sendBroadcast(intent);
     }
