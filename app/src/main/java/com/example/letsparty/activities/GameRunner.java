@@ -68,6 +68,8 @@ public class GameRunner extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        winnerText.setText("Waiting for other players...");
+        scores.setText("");
         if (resultCode == RESULT_OK)
         {
             //placeholder for calculating point. Can be changed later
@@ -113,7 +115,6 @@ public class GameRunner extends AppCompatActivity {
 
     private Task<Boolean> waitForNextGame(){
         TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
-        scores.setText("");
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         BroadcastReceiver br = new BroadcastReceiver()
