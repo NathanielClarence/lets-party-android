@@ -112,23 +112,23 @@ public class FaceDirection extends Game {
                 txt_direction.setText("Facing "+direction);
 //                Log.e("ROTATION", String.valueOf(-floatOrientation[0]*180/3.14159));
 
-                if (run != 0){
-                    if (direction.equals(directionToWin)){
-                        //add points to this user
-                        //move to next game/end
-                        System.out.println("Success");
-                        //sensorManager.unregisterListener(this);
-                        directionFinish();
-                        gameFinished(true);
-                    }
-                }else {
-                    prevRotation = rotationDeg;
-//                    Log.e("ROT", String.valueOf(rotationDeg));
+//                if (run != 0){
+                if (direction.equals(directionToWin)){
+                    //add points to this user
+                    //move to next game/end
+                    System.out.println("Success");
+                    //sensorManager.unregisterListener(this);
+                    directionFinish();
+                    gameFinished(true);
                 }
+//                }else {
+//                    prevRotation = rotationDeg;
+////                    Log.e("ROT", String.valueOf(rotationDeg));
+//                }
 
-                if (prevRotation != rotationDeg){
-                    run++;
-                }
+//                if (prevRotation != rotationDeg){
+//                    run++;
+//                }
             }
 
             @Override
