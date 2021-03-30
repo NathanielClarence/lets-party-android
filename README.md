@@ -10,10 +10,15 @@ Group No: W01/11-3
 Group Members:
 
 1: [sstratsianis, sstratsianis@student.unimelb.edu.au] 
+
 2: [emamintada, emamintada@student.unimelb.edu.au] 
+
 3: [shtjandra, shtjandra@student.unimelb.edu.au] 
+
 4: [nharyanto, nharyanto@student.unimelb.edu.au] 
-5: [malessa, Malessa@student.unimelb.edu.au]
+
+5: [malessa, Malessa@student.unimelb.edu.au] 
+
 6: [conten, conten@student.unimelb.edu.au] 
 
 YouTube Link: https://youtu.be/Y12n_ibw4A0
