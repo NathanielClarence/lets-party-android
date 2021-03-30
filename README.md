@@ -1,8 +1,8 @@
 # lets-party-frontend
 Party Game App for Android smartphones, part of COMP90018 - Mobile Computing Systems Programming assignment. The app is a game integrating various sensors in a smartphone. Code in the repository is on the android side.
 
-################################################################################                     
-                    COMP90018 Programming Project Submission
+################################################################################                    
+     COMP90018 - Mobile Computing Systems Programming Software Project 
 ################################################################################
 
 Group No: W01/11-3
